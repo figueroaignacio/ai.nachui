@@ -1,6 +1,6 @@
-import { useNavigate, getRouteApi } from '@tanstack/react-router';
-import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
+import { useEffect } from 'react';
 import { meQueryOptions } from '../queries';
 import { useAuthStore } from '../store/auth-store';
 
@@ -40,7 +40,7 @@ export function AuthCallbackPage() {
   useEffect(() => {
     if (!accessToken) {
       clearAuth();
-      navigate({ to: '/login' });
+      navigate({ to: '/' });
       return;
     }
 
@@ -51,7 +51,7 @@ export function AuthCallbackPage() {
 
     if (meQuery.isError) {
       clearAuth();
-      navigate({ to: '/login' });
+      navigate({ to: '/' });
     }
   }, [accessToken, meQuery.data, meQuery.isError, setAuth, clearAuth, navigate]);
 
