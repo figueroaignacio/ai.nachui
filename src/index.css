@@ -100,6 +100,6 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-sans tracking-wide antialiased border-border;
+    @apply bg-background text-foreground border-border font-sans tracking-wide antialiased;
   }
 }

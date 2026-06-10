@@ -1,6 +1,6 @@
-import { cva, type VariantProps } from 'class-variance-authority'
-import * as React from 'react'
-import { cn } from '../../lib/cn'
+import { cva, type VariantProps } from 'class-variance-authority';
+import * as React from 'react';
+import { cn } from '../../lib/cn';
 
 export const typographyVariants = cva('text-foreground', {
   variants: {
@@ -12,8 +12,7 @@ export const typographyVariants = cva('text-foreground', {
       h5: 'scroll-m-20 text-lg font-semibold tracking-tight',
       h6: 'scroll-m-20 text-base font-semibold tracking-tight',
       p: 'leading-7 [&:not(:first-child)]:mt-6',
-      blockquote:
-        'mt-6 border-l-2 border-primary/20 pl-6 italic text-muted-foreground',
+      blockquote: 'mt-6 border-l-2 border-primary/20 pl-6 italic text-muted-foreground',
       lead: 'text-xl text-muted-foreground leading-relaxed',
       large: 'text-lg font-semibold',
       small: 'text-sm font-medium leading-none',
@@ -38,7 +37,7 @@ export const typographyVariants = cva('text-foreground', {
   defaultVariants: {
     variant: 'p',
   },
-})
+});
 
 const variantTagMap: Record<
   NonNullable<VariantProps<typeof typographyVariants>['variant']>,
@@ -57,27 +56,25 @@ const variantTagMap: Record<
   large: 'p',
   small: 'p',
   muted: 'p',
-} as const
+} as const;
 
 export type TypographyProps = React.HTMLAttributes<HTMLElement> &
   VariantProps<typeof typographyVariants> & {
-    as?: React.ElementType
-  }
+    as?: React.ElementType;
+  };
 
 export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
   ({ className, variant = 'p', align, weight, as, ...props }, ref) => {
-    const Component = as ?? variantTagMap[variant!]
+    const Component = as ?? variantTagMap[variant!];
 
     return (
       <Component
         ref={ref}
-        className={cn(
-          typographyVariants({ variant, align, weight, className }),
-        )}
+        className={cn(typographyVariants({ variant, align, weight, className }))}
         {...props}
       />
-    )
+    );
   },
-)
+);
 
-Typography.displayName = 'Typography'
+Typography.displayName = 'Typography';

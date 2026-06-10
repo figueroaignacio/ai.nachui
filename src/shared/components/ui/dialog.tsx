@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { Cancel01Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { AnimatePresence, type HTMLMotionProps, motion } from 'motion/react'
-import * as React from 'react'
-import { cloneElement } from 'react'
-import { createPortal } from 'react-dom'
-import { cn } from '../../lib/cn'
+import { Cancel01Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { AnimatePresence, type HTMLMotionProps, motion } from 'motion/react';
+import * as React from 'react';
+import { cloneElement } from 'react';
+import { createPortal } from 'react-dom';
+import { cn } from '../../lib/cn';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',
@@ -15,7 +15,7 @@ const FOCUSABLE_SELECTOR = [
   'select:not([disabled])',
   'textarea:not([disabled])',
   '[tabindex]:not([tabindex="-1"])',
-].join(', ')
+].join(', ');
 
 // --- Animation constants (module level) ---
 
@@ -23,54 +23,52 @@ const OVERLAY_VARIANTS = {
   initial: { opacity: 0, backdropFilter: 'blur(0px)' },
   animate: { opacity: 1, backdropFilter: 'blur(4px)' },
   exit: { opacity: 0, backdropFilter: 'blur(0px)' },
-} as const
+} as const;
 
-const OVERLAY_TRANSITION = { duration: 0.3 } as const
-const OVERLAY_STYLE = { willChange: 'opacity' } as const
+const OVERLAY_TRANSITION = { duration: 0.3 } as const;
+const OVERLAY_STYLE = { willChange: 'opacity' } as const;
 
 const DIALOG_VARIANTS = {
   initial: { opacity: 0, scale: 0.9, filter: 'blur(10px)', y: 10 },
   animate: { opacity: 1, scale: 1, filter: 'blur(0px)', y: 0 },
   exit: { opacity: 0, scale: 0.9, filter: 'blur(10px)', y: 10 },
-} as const
+} as const;
 
 const DIALOG_TRANSITION = {
   type: 'spring',
   damping: 25,
   stiffness: 350,
   mass: 0.5,
-} as const
+} as const;
 
-const DIALOG_EXIT_TRANSITION = { duration: 0.2, ease: 'easeIn' } as const
-const DIALOG_STYLE = { willChange: 'opacity, transform, filter' } as const
+const DIALOG_EXIT_TRANSITION = { duration: 0.2, ease: 'easeIn' } as const;
+const DIALOG_STYLE = { willChange: 'opacity, transform, filter' } as const;
 
 // --- Context ---
 
 type DialogContextType = {
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  id: string
-}
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  id: string;
+};
 
-const DialogContext = React.createContext<DialogContextType | undefined>(
-  undefined,
-)
+const DialogContext = React.createContext<DialogContextType | undefined>(undefined);
 
 const useDialogContext = () => {
-  const context = React.use(DialogContext)
+  const context = React.use(DialogContext);
   if (!context) {
-    throw new Error('useDialogContext must be used within a Dialog')
+    throw new Error('useDialogContext must be used within a Dialog');
   }
-  return context
-}
+  return context;
+};
 
 // --- Components ---
 
 interface DialogProps {
-  children: React.ReactNode
-  defaultOpen?: boolean
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const DialogRoot = ({
@@ -79,31 +77,31 @@ const DialogRoot = ({
   open: controlledOpen,
   onOpenChange,
 }: DialogProps) => {
-  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen)
-  const id = React.useId()
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen);
+  const id = React.useId();
 
-  const isControlled = controlledOpen !== undefined
-  const open = isControlled ? controlledOpen : uncontrolledOpen
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : uncontrolledOpen;
 
   const setOpen = React.useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
       if (!isControlled) {
-        setUncontrolledOpen(value)
+        setUncontrolledOpen(value);
       }
 
       if (onOpenChange) {
-        const newValue = typeof value === 'function' ? value(open) : value
-        onOpenChange(newValue)
+        const newValue = typeof value === 'function' ? value(open) : value;
+        onOpenChange(newValue);
       }
     },
     [isControlled, onOpenChange, open],
-  )
+  );
 
-  return <DialogContext value={{ open, setOpen, id }}>{children}</DialogContext>
-}
+  return <DialogContext value={{ open, setOpen, id }}>{children}</DialogContext>;
+};
 
 interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean
+  asChild?: boolean;
 }
 
 const DialogTrigger = ({
@@ -112,44 +110,42 @@ const DialogTrigger = ({
   ref,
   ...props
 }: DialogTriggerProps & { ref?: React.Ref<HTMLButtonElement> }) => {
-  const { setOpen } = useDialogContext()
+  const { setOpen } = useDialogContext();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setOpen(true)
-    onClick?.(e)
-  }
+    setOpen(true);
+    onClick?.(e);
+  };
 
   if (asChild) {
-    return cloneElement(
-      props.children as React.ReactElement<Record<string, unknown>>,
-      {
-        onClick: handleClick,
-      },
-    )
+    return cloneElement(props.children as React.ReactElement<Record<string, unknown>>, {
+      onClick: handleClick,
+    });
   }
 
-  return <button type="button" onClick={handleClick} ref={ref} {...props} />
-}
-DialogTrigger.displayName = 'DialogTrigger'
+  return <button type="button" onClick={handleClick} ref={ref} {...props} />;
+};
+DialogTrigger.displayName = 'DialogTrigger';
 
 interface DialogPortalProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const DialogPortal = ({ children }: DialogPortalProps) => {
-  const [mounted, setMounted] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
-    setMounted(true)
-  }, [])
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
-  return createPortal(children, document.body)
-}
+  return createPortal(children, document.body);
+};
 
 interface DialogCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean
+  asChild?: boolean;
 }
 
 const DialogClose = ({
@@ -158,36 +154,33 @@ const DialogClose = ({
   ref,
   ...props
 }: DialogCloseProps & { ref?: React.Ref<HTMLButtonElement> }) => {
-  const { setOpen } = useDialogContext()
+  const { setOpen } = useDialogContext();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setOpen(false)
-    onClick?.(e)
-  }
+    setOpen(false);
+    onClick?.(e);
+  };
 
   if (asChild) {
-    return cloneElement(
-      props.children as React.ReactElement<Record<string, unknown>>,
-      {
-        onClick: handleClick,
-      },
-    )
+    return cloneElement(props.children as React.ReactElement<Record<string, unknown>>, {
+      onClick: handleClick,
+    });
   }
 
-  return <button type="button" onClick={handleClick} ref={ref} {...props} />
-}
-DialogClose.displayName = 'DialogClose'
+  return <button type="button" onClick={handleClick} ref={ref} {...props} />;
+};
+DialogClose.displayName = 'DialogClose';
 
 type DialogOverlayProps = HTMLMotionProps<'div'> & {
-  className?: string
-}
+  className?: string;
+};
 
 const DialogOverlay = ({
   className,
   ref,
   ...props
 }: DialogOverlayProps & { ref?: React.Ref<HTMLDivElement> }) => {
-  const { setOpen } = useDialogContext()
+  const { setOpen } = useDialogContext();
 
   return (
     <motion.div
@@ -202,80 +195,78 @@ const DialogOverlay = ({
       onClick={() => setOpen(false)}
       {...props}
     />
-  )
-}
-DialogOverlay.displayName = 'DialogOverlay'
+  );
+};
+DialogOverlay.displayName = 'DialogOverlay';
 
 type DialogContentProps = {
-  className?: string
-  children?: React.ReactNode
-}
+  className?: string;
+  children?: React.ReactNode;
+};
 
 const DialogContent = ({
   className,
   children,
   ref,
 }: DialogContentProps & { ref?: React.Ref<HTMLDivElement> }) => {
-  const { id, open, setOpen } = useDialogContext()
-  const contentRef = React.useRef<HTMLDivElement>(null)
-  const triggerRef = React.useRef<HTMLElement | null>(null)
+  const { id, open, setOpen } = useDialogContext();
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  const triggerRef = React.useRef<HTMLElement | null>(null);
 
   React.useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
-    triggerRef.current = document.activeElement as HTMLElement
+    triggerRef.current = document.activeElement as HTMLElement;
 
     const trapFocus = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return
+      if (e.key !== 'Tab') return;
 
-      const content = contentRef.current
-      if (!content) return
+      const content = contentRef.current;
+      if (!content) return;
 
-      const focusable = Array.from(
-        content.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      )
-      if (focusable.length === 0) return
+      const focusable = Array.from(content.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+      if (focusable.length === 0) return;
 
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
 
       if (e.shiftKey) {
         if (document.activeElement === first) {
-          e.preventDefault()
-          last?.focus()
+          e.preventDefault();
+          last?.focus();
         }
       } else {
         if (document.activeElement === last) {
-          e.preventDefault()
-          first?.focus()
+          e.preventDefault();
+          first?.focus();
         }
       }
-    }
+    };
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
-    }
+      if (e.key === 'Escape') setOpen(false);
+    };
 
-    document.addEventListener('keydown', trapFocus)
-    document.addEventListener('keydown', handleEscape)
+    document.addEventListener('keydown', trapFocus);
+    document.addEventListener('keydown', handleEscape);
 
     requestAnimationFrame(() => {
-      const content = contentRef.current
+      const content = contentRef.current;
       if (content) {
-        const focusable = content.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)
-        focusable?.focus()
+        const focusable = content.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+        focusable?.focus();
       }
-    })
+    });
 
-    document.body.style.overflow = 'hidden'
+    document.body.style.overflow = 'hidden';
 
     return () => {
-      document.removeEventListener('keydown', trapFocus)
-      document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = 'unset'
-      triggerRef.current?.focus()
-    }
-  }, [open, setOpen])
+      document.removeEventListener('keydown', trapFocus);
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+      triggerRef.current?.focus();
+    };
+  }, [open, setOpen]);
 
   return (
     <AnimatePresence mode="wait">
@@ -284,11 +275,9 @@ const DialogContent = ({
           <DialogOverlay />
           <motion.div
             ref={(node) => {
-              contentRef.current = node
-              if (typeof ref === 'function') ref(node)
-              else if (ref)
-                (ref as React.MutableRefObject<HTMLDivElement | null>).current =
-                  node
+              contentRef.current = node;
+              if (typeof ref === 'function') ref(node);
+              else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
             }}
             role="dialog"
             aria-modal="true"
@@ -305,57 +294,48 @@ const DialogContent = ({
             transition={DIALOG_TRANSITION}
             style={DIALOG_STYLE}
             className={cn(
-              'bg-background fixed border top-[50%] left-[50%] z-500 grid w-full max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border-border p-6',
+              'bg-background border-border fixed top-[50%] left-[50%] z-500 grid w-full max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border p-6',
               className,
-            )}>
+            )}
+          >
             {children}
             <DialogClose className="ring-offset-background focus-visible:ring-ring absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none">
-              <HugeiconsIcon
-                icon={Cancel01Icon}
-                className="h-4 w-4"
-                size={16}
-              />
+              <HugeiconsIcon icon={Cancel01Icon} className="h-4 w-4" size={16} />
               <span className="sr-only">Close</span>
             </DialogClose>
           </motion.div>
         </DialogPortal>
       )}
     </AnimatePresence>
-  )
-}
-DialogContent.displayName = 'DialogContent'
+  );
+};
+DialogContent.displayName = 'DialogContent';
 
-type DialogHeaderProps = React.HTMLAttributes<HTMLDivElement>
+type DialogHeaderProps = React.HTMLAttributes<HTMLDivElement>;
 
 const DialogHeader = ({ className, ...props }: DialogHeaderProps) => {
   return (
     <div
-      className={cn(
-        'flex flex-col space-y-1.5 text-center sm:text-left',
-        className,
-      )}
+      className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}
       {...props}
     />
-  )
-}
-DialogHeader.displayName = 'DialogHeader'
+  );
+};
+DialogHeader.displayName = 'DialogHeader';
 
-type DialogFooterProps = React.HTMLAttributes<HTMLDivElement>
+type DialogFooterProps = React.HTMLAttributes<HTMLDivElement>;
 
 const DialogFooter = ({ className, ...props }: DialogFooterProps) => {
   return (
     <div
-      className={cn(
-        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
-        className,
-      )}
+      className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
       {...props}
     />
-  )
-}
-DialogFooter.displayName = 'DialogFooter'
+  );
+};
+DialogFooter.displayName = 'DialogFooter';
 
-type DialogTitleProps = React.HTMLAttributes<HTMLHeadingElement>
+type DialogTitleProps = React.HTMLAttributes<HTMLHeadingElement>;
 
 const DialogTitle = ({
   className,
@@ -363,31 +343,29 @@ const DialogTitle = ({
   ref,
   ...props
 }: DialogTitleProps & { ref?: React.Ref<HTMLHeadingElement> }) => {
-  const { id } = useDialogContext()
+  const { id } = useDialogContext();
 
   return (
     <h2
       id={`${id}-title`}
       ref={ref}
-      className={cn(
-        'text-lg leading-none font-semibold tracking-tight',
-        className,
-      )}
-      {...props}>
+      className={cn('text-lg leading-none font-semibold tracking-tight', className)}
+      {...props}
+    >
       {children}
     </h2>
-  )
-}
-DialogTitle.displayName = 'DialogTitle'
+  );
+};
+DialogTitle.displayName = 'DialogTitle';
 
-type DialogDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>
+type DialogDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 const DialogDescription = ({
   className,
   ref,
   ...props
 }: DialogDescriptionProps & { ref?: React.Ref<HTMLParagraphElement> }) => {
-  const { id } = useDialogContext()
+  const { id } = useDialogContext();
 
   return (
     <p
@@ -396,9 +374,9 @@ const DialogDescription = ({
       className={cn('text-muted-foreground text-sm', className)}
       {...props}
     />
-  )
-}
-DialogDescription.displayName = 'DialogDescription'
+  );
+};
+DialogDescription.displayName = 'DialogDescription';
 
 const Dialog = Object.assign(DialogRoot, {
   Trigger: DialogTrigger,
@@ -410,6 +388,6 @@ const Dialog = Object.assign(DialogRoot, {
   Footer: DialogFooter,
   Title: DialogTitle,
   Description: DialogDescription,
-})
+});
 
-export { Dialog }
+export { Dialog };

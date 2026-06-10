@@ -1,16 +1,11 @@
-'use client'
+'use client';
 
-import { Loading02Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
-import { cva, type VariantProps } from 'class-variance-authority'
-import {
-  AnimatePresence,
-  type HTMLMotionProps,
-  motion,
-  useReducedMotion,
-} from 'motion/react'
-import React from 'react'
-import { cn } from '../../lib/cn'
+import { Loading02Icon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { AnimatePresence, type HTMLMotionProps, motion, useReducedMotion } from 'motion/react';
+import React from 'react';
+import { cn } from '../../lib/cn';
 
 // --- CVA ---
 
@@ -38,7 +33,7 @@ const buttonVariants = cva(
       size: 'default',
     },
   },
-)
+);
 
 // --- Animation variants (hoisted at module level) ---
 
@@ -46,29 +41,28 @@ const LOADER_VARIANTS = {
   initial: { opacity: 0, scale: 0.8, filter: 'blur(4px)' },
   animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
   exit: { opacity: 0, scale: 0.8, filter: 'blur(4px)' },
-} as const
+} as const;
 
 const CONTENT_VARIANTS = {
   initial: { opacity: 0, y: 5, filter: 'blur(4px)' },
   animate: { opacity: 1, y: 0, filter: 'blur(0px)' },
   exit: { opacity: 0, y: -5, filter: 'blur(4px)' },
-} as const
+} as const;
 
-const SWAP_TRANSITION = { duration: 0.2 } as const
-const BUTTON_SPRING = { type: 'spring', stiffness: 400, damping: 17 } as const
-const BUTTON_STYLE = { willChange: 'transform' } as const
+const SWAP_TRANSITION = { duration: 0.2 } as const;
+const BUTTON_SPRING = { type: 'spring', stiffness: 400, damping: 17 } as const;
+const BUTTON_STYLE = { willChange: 'transform' } as const;
 
 // --- Component ---
 
-interface ButtonProps
-  extends HTMLMotionProps<'button'>, VariantProps<typeof buttonVariants> {
-  loading?: boolean
-  loader?: React.ReactNode
-  leftIcon?: React.ReactNode
-  rightIcon?: React.ReactNode
-  fullWidth?: boolean
-  asChild?: boolean
-  children?: React.ReactNode
+interface ButtonProps extends HTMLMotionProps<'button'>, VariantProps<typeof buttonVariants> {
+  loading?: boolean;
+  loader?: React.ReactNode;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
+  asChild?: boolean;
+  children?: React.ReactNode;
 }
 
 const ButtonRoot = ({
@@ -86,8 +80,8 @@ const ButtonRoot = ({
   ref,
   ...props
 }: ButtonProps) => {
-  const isDisabled = disabled || loading
-  const shouldReduceMotion = useReducedMotion()
+  const isDisabled = disabled || loading;
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <motion.button
@@ -95,17 +89,12 @@ const ButtonRoot = ({
       type={type}
       disabled={isDisabled}
       aria-busy={loading}
-      className={cn(
-        buttonVariants({ variant, size }),
-        fullWidth && 'w-full',
-        className,
-      )}
-      whileTap={
-        !isDisabled && !shouldReduceMotion ? { scale: 0.96 } : undefined
-      }
+      className={cn(buttonVariants({ variant, size }), fullWidth && 'w-full', className)}
+      whileTap={!isDisabled && !shouldReduceMotion ? { scale: 0.96 } : undefined}
       transition={BUTTON_SPRING}
       style={BUTTON_STYLE}
-      {...props}>
+      {...props}
+    >
       <AnimatePresence mode="popLayout" initial={false}>
         {loading ? (
           <motion.span
@@ -116,13 +105,10 @@ const ButtonRoot = ({
             exit="exit"
             transition={SWAP_TRANSITION}
             className="absolute flex items-center justify-center"
-            aria-hidden="true">
+            aria-hidden="true"
+          >
             {loader ?? (
-              <HugeiconsIcon
-                icon={Loading02Icon}
-                className="size-4 animate-spin"
-                size={16}
-              />
+              <HugeiconsIcon icon={Loading02Icon} className="size-4 animate-spin" size={16} />
             )}
           </motion.span>
         ) : (
@@ -133,7 +119,8 @@ const ButtonRoot = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            transition={SWAP_TRANSITION}>
+            transition={SWAP_TRANSITION}
+          >
             {leftIcon ? <span className="shrink-0">{leftIcon}</span> : null}
             <span>{children}</span>
             {rightIcon ? <span className="shrink-0">{rightIcon}</span> : null}
@@ -141,18 +128,18 @@ const ButtonRoot = ({
         )}
       </AnimatePresence>
     </motion.button>
-  )
-}
+  );
+};
 
-ButtonRoot.displayName = 'Button'
+ButtonRoot.displayName = 'Button';
 
 // --- ButtonGroup ---
 
 interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
-  orientation?: 'horizontal' | 'vertical'
-  attached?: boolean
-  ref?: React.Ref<HTMLDivElement>
+  children: React.ReactNode;
+  orientation?: 'horizontal' | 'vertical';
+  attached?: boolean;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
 const ButtonGroup = ({
@@ -177,17 +164,18 @@ const ButtonGroup = ({
           : 'gap-2',
         className,
       )}
-      {...props}>
+      {...props}
+    >
       {children}
     </div>
-  )
-}
+  );
+};
 
-ButtonGroup.displayName = 'ButtonGroup'
+ButtonGroup.displayName = 'ButtonGroup';
 
 const Button = Object.assign(ButtonRoot, {
   Group: ButtonGroup,
-})
+});
 
-export { Button, buttonVariants }
-export type { ButtonGroupProps, ButtonProps }
+export { Button, buttonVariants };
+export type { ButtonGroupProps, ButtonProps };

@@ -1,0 +1,29 @@
+# Build and output directories
+dist
+build
+.cache
+
+# Dependencies
+node_modules
+
+# Locks
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Environment and secrets
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Git and project folders
+.git
+.github
+.vscode
+.agents
+.gemini

@@ -1,4 +1,4 @@
-import { getGitHubOAuthUrl } from '../../../shared/lib/oauth'
+import { getGitHubOAuthUrl } from '../../../shared/lib/oauth';
 
 export function LoginPage() {
   return (
@@ -6,5 +6,5 @@ export function LoginPage() {
       <h1>Login</h1>
       <a href={getGitHubOAuthUrl()}>Continue with GitHub</a>
     </div>
-  )
+  );
 }
