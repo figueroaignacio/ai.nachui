@@ -30,10 +30,10 @@ export function Sidebar({
   const navigate = useNavigate()
 
   const chatHistory = [
-    'Design landing page header',
-    'Fix React hydration mismatch',
-    'NachUI button variants outline',
-    'Auth store hook composition',
+    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Design landing page header' },
+    { id: '6ba7b810-9dad-11d1-80b4-00c04fd430c8', title: 'Fix React hydration mismatch' },
+    { id: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', title: 'NachUI button variants outline' },
+    { id: '7e57d004-2b99-4e7a-8f99-aa4db83e1c6b', title: 'Auth store hook composition' },
   ]
 
   return (
@@ -78,13 +78,13 @@ export function Sidebar({
             Recent Chats
           </span>
           <div className="space-y-0.5">
-            {chatHistory.map((chat, idx) => (
+            {chatHistory.map((chat) => (
               <SidebarItem
-                key={idx}
+                key={chat.id}
                 icon={Chat01Icon}
-                label={chat}
-                active={activeItem === chat}
-                onClick={() => onChatClick?.(chat)}
+                label={chat.title}
+                active={activeItem === chat.id}
+                onClick={() => onChatClick?.(chat.id)}
               />
             ))}
           </div>

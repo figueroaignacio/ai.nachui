@@ -5,9 +5,11 @@ import { SuggestionCard } from '../../../shared/components/ui/navigation'
 import { Sidebar } from '../../../shared/components/ui/sidebar'
 import { Typography } from '../../../shared/components/ui/typography'
 import { useRequireAuth } from '../../auth/hooks/use-require-auth'
+import { useNavigate } from '@tanstack/react-router'
 
 export function ChatNewPage() {
   const { user } = useRequireAuth()
+  const navigate = useNavigate()
   const [activeItem, setActiveItem] = React.useState('new-chat')
   const [messages, setMessages] = React.useState<
     Array<{ role: 'user' | 'assistant'; text: string }>
@@ -45,12 +47,12 @@ export function ChatNewPage() {
         onNewChat={() => {
           setActiveItem('new-chat')
           setMessages([])
+          navigate({ to: '/chat/new' })
         }}
-        onDocsClick={() => setActiveItem('docs')}
-        onSettingsClick={() => setActiveItem('settings')}
-        onChatClick={(chatName) => {
-          setActiveItem(chatName)
-          setMessages([{ role: 'user', text: chatName }])
+        onDocsClick={() => navigate({ to: '/chat/new' })}
+        onSettingsClick={() => navigate({ to: '/chat/new' })}
+        onChatClick={(chatId) => {
+          navigate({ to: `/chat/${chatId}` })
         }}
       />
 
