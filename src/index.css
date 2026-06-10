@@ -59,6 +59,7 @@
   --ring: oklch(65% 0.2 45);
   --grid-color: oklch(100% 0 0 / 0.05);
   --shadow-lg: 0 10px 30px -10px oklch(0% 0 0 / 0.9);
+  --radius: 0.7rem;
 }
 
 @theme inline {
@@ -99,6 +100,6 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground font-sans tracking-wide antialiased;
+    @apply bg-background text-foreground font-sans tracking-wide antialiased border-border;
   }
 }

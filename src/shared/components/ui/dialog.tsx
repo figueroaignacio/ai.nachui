@@ -2,7 +2,7 @@
 
 import { Cancel01Icon } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { AnimatePresence, HTMLMotionProps, motion } from 'motion/react'
+import { AnimatePresence, type HTMLMotionProps, motion } from 'motion/react'
 import * as React from 'react'
 import { cloneElement } from 'react'
 import { createPortal } from 'react-dom'
