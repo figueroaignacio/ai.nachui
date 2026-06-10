@@ -1,13 +1,9 @@
-import {
-  Book01Icon,
-  Chat01Icon,
-  Menu01Icon,
-  Search01Icon,
-  SettingsIcon,
-} from '@hugeicons/core-free-icons'
-import { HugeiconsIcon, type IconSvgElement } from '@hugeicons/react'
+import { Menu01Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
 import { Button } from '../../../shared/components/ui/button'
 import { Dialog } from '../../../shared/components/ui/dialog'
+import { SuggestionCard } from '../../../shared/components/ui/navigation'
+import { Sidebar } from '../../../shared/components/ui/sidebar'
 import { Typography } from '../../../shared/components/ui/typography'
 import { getGitHubOAuthUrl } from '../../../shared/lib/oauth'
 
@@ -23,123 +19,21 @@ function GitHubIcon({ className }: { className?: string }) {
   )
 }
 
-interface SuggestionCardProps {
-  title: string
-  description: string
-}
-
-function SuggestionCard({ title }: SuggestionCardProps) {
-  return (
-    <Dialog.Trigger asChild>
-      <button
-        type="button"
-        className="flex cursor-pointer flex-col gap-1 rounded-lg border border-border/40 bg-card/40 p-3 text-left transition-colors duration-150 hover:border-muted-foreground/20 hover:bg-muted/25">
-        <span className="text-xs font-medium text-foreground">{title}</span>
-      </button>
-    </Dialog.Trigger>
-  )
-}
-
-interface SidebarItemProps {
-  icon?: IconSvgElement
-  label: string
-  active?: boolean
-}
-
-function SidebarItem({ icon, label, active = false }: SidebarItemProps) {
-  return (
-    <Dialog.Trigger asChild>
-      <button
-        type="button"
-        className={`flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-150 ${
-          active
-            ? 'bg-secondary text-secondary-foreground font-medium'
-            : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-        }`}>
-        {icon && (
-          <HugeiconsIcon icon={icon} className="size-4 shrink-0" size={16} />
-        )}
-        <span className="truncate">{label}</span>
-      </button>
-    </Dialog.Trigger>
-  )
-}
-
 export function HomePage() {
   const suggestions = [
-    {
-      title: 'Analyze UI component',
-      description: 'Check for React best practices & patterns',
-    },
-    {
-      title: 'Refactor Tailwind styles',
-      description: 'Improve modern design layout',
-    },
-    {
-      title: 'Optimize state flow',
-      description: 'Simplify React context & props',
-    },
-    {
-      title: 'Explain system design',
-      description: 'Break down NachUI architecture specs',
-    },
-  ]
-
-  const chatHistory = [
-    'Design landing page header',
-    'Fix React hydration mismatch',
-    'NachUI button variants outline',
-    'Auth store hook composition',
+    { title: 'Analyze UI component' },
+    { title: 'Refactor Tailwind styles' },
+    { title: 'Optimize state flow' },
+    { title: 'Explain system design' },
   ]
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
       <Dialog>
-        <aside className="hidden w-64 shrink-0 flex-col border-r border-border bg-card md:flex">
-          <div className="flex h-14 items-center justify-between px-4 border-b border-border/60">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold tracking-tight">
-                Nach AI
-              </span>
-            </div>
-          </div>
-          <nav className="flex-1 space-y-4 overflow-y-auto p-3">
-            <div className="space-y-1">
-              <SidebarItem icon={Chat01Icon} label="New Chat" />
-              <SidebarItem icon={Book01Icon} label="System Docs" />
-            </div>
-            <div className="px-1.5">
-              <Dialog.Trigger asChild>
-                <div className="relative flex cursor-pointer items-center rounded-lg border border-border/60 bg-muted/30 px-2.5 py-1.5 text-muted-foreground hover:border-muted-foreground/20">
-                  <HugeiconsIcon
-                    icon={Search01Icon}
-                    className="size-3.5 shrink-0 opacity-55"
-                    size={14}
-                  />
-                  <span className="ml-2 text-xs select-none">
-                    Search chats...
-                  </span>
-                </div>
-              </Dialog.Trigger>
-            </div>
+        {/* Reusable Sidebar Component */}
+        <Sidebar activeItem="new-chat" />
 
-            <div className="space-y-2">
-              <span className="px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
-                Recent Chats
-              </span>
-              <div className="space-y-0.5">
-                {chatHistory.map((chat, idx) => (
-                  <SidebarItem key={idx} icon={Chat01Icon} label={chat} />
-                ))}
-              </div>
-            </div>
-          </nav>
-
-          <div className="border-t border-border/60 p-3">
-            <SidebarItem icon={SettingsIcon} label="Settings" />
-          </div>
-        </aside>
-
+        {/* Main Content Area */}
         <div className="relative flex flex-1 flex-col overflow-y-auto">
           <header className="flex h-14 items-center justify-between border-b border-border/60 px-4 md:hidden">
             <Dialog.Trigger asChild>
@@ -150,7 +44,9 @@ export function HomePage() {
               </button>
             </Dialog.Trigger>
             <span className="text-sm font-semibold">NachAI</span>
+            <div className="size-8" />
           </header>
+
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
             <div className="flex w-full max-w-xl flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-2">
@@ -161,6 +57,7 @@ export function HomePage() {
                   What can I help with?
                 </Typography>
               </div>
+
               <Dialog.Trigger asChild>
                 <button
                   type="button"
@@ -175,15 +72,12 @@ export function HomePage() {
 
               <div className="flex max-w-2xl flex-wrap justify-center gap-2">
                 {suggestions.map((s, idx) => (
-                  <SuggestionCard
-                    key={idx}
-                    title={s.title}
-                    description={s.description}
-                  />
+                  <SuggestionCard key={idx} title={s.title} />
                 ))}
               </div>
             </div>
           </div>
+
           <footer className="flex justify-center py-4">
             <Typography
               variant="muted"
