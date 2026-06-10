@@ -1,11 +1,6 @@
-import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { useAuth } from '../features/auth/hooks/use-auth'
+import { createRootRoute } from '@tanstack/react-router'
+import { RootComponent } from '../shared/components/root-component'
 
 export const Route = createRootRoute({
   component: RootComponent,
 })
-
-function RootComponent() {
-  useAuth()
-  return <Outlet />
-}
