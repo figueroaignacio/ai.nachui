@@ -198,10 +198,7 @@ const DialogOverlay = ({
       exit="exit"
       transition={OVERLAY_TRANSITION}
       style={OVERLAY_STYLE}
-      className={cn(
-        'fixed inset-0 z-200 bg-white/10 dark:bg-black/40',
-        className,
-      )}
+      className={cn('fixed inset-0 z-200 bg-black/10', className)}
       onClick={() => setOpen(false)}
       {...props}
     />
@@ -308,7 +305,7 @@ const DialogContent = ({
             transition={DIALOG_TRANSITION}
             style={DIALOG_STYLE}
             className={cn(
-              'bg-background fixed top-[50%] left-[50%] z-500 grid w-full max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border p-6',
+              'bg-background fixed border-border border top-[50%] left-[50%] z-500 grid w-full max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 rounded-xl border-border p-6',
               className,
             )}>
             {children}
