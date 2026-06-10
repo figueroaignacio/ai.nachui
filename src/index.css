@@ -1,1 +1,62 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: oklch(98.5% 0.005 250);
+  --foreground: oklch(15% 0.01 250);
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(15% 0.01 250);
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(15% 0.01 250);
+  --primary: oklch(60% 0.2 45);
+  --primary-foreground: oklch(99% 0 0);
+  --secondary: oklch(96% 0.01 250);
+  --secondary-foreground: oklch(15% 0.01 250);
+  --muted: oklch(96% 0.01 250);
+  --muted-foreground: oklch(55% 0.015 250);
+  --accent: oklch(95% 0.01 250);
+  --accent-foreground: oklch(60% 0.2 45);
+  --destructive: oklch(57.7% 0.245 27.3);
+  --destructive-foreground: oklch(98.5% 0 0);
+  --info: oklch(60% 0.15 250);
+  --info-foreground: oklch(98.5% 0 0);
+  --success: oklch(62.7% 0.17 149.2);
+  --success-foreground: oklch(98.5% 0 0);
+  --warning: oklch(76.9% 0.135 71.3);
+  --warning-foreground: oklch(20.5% 0 0);
+  --border: oklch(94% 0.005 250);
+  --input: oklch(94% 0.005 250);
+  --ring: oklch(60% 0.2 45);
+  --radius: 0.7rem;
+  --grid-color: oklch(0% 0 0 / 0.05);
+}
+
+.dark {
+  --background: oklch(17% 0.005 250);
+  --foreground: oklch(98% 0 0);
+  --card: oklch(20% 0.008 250);
+  --card-foreground: oklch(98% 0 0);
+  --popover: oklch(21% 0.005 250);
+  --popover-foreground: oklch(98% 0 0);
+  --primary: oklch(65% 0.2 45);
+  --primary-foreground: oklch(14% 0.01 250);
+  --secondary: oklch(24% 0.008 250);
+  --secondary-foreground: oklch(98% 0 0);
+  --muted: oklch(24% 0.008 250);
+  --muted-foreground: oklch(75% 0.01 250);
+  --accent: oklch(24% 0.008 250);
+  --accent-foreground: oklch(65% 0.2 45);
+  --destructive: oklch(39.6% 0.141 25.7);
+  --destructive-foreground: oklch(98.5% 0 0);
+  --info: oklch(50% 0.15 250);
+  --info-foreground: oklch(98.5% 0 0);
+  --success: oklch(80% 0.182 151.7);
+  --success-foreground: oklch(14.5% 0 0);
+  --warning: oklch(83.7% 0.164 84.4);
+  --warning-foreground: oklch(14.5% 0 0);
+  --border: oklch(24% 0.005 250);
+  --input: oklch(24% 0.005 250);
+  --ring: oklch(65% 0.2 45);
+  --grid-color: oklch(100% 0 0 / 0.05);
+  --shadow-lg: 0 10px 30px -10px oklch(0% 0 0 / 0.9);
+}
