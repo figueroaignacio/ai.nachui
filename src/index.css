@@ -102,4 +102,24 @@
   body {
     @apply bg-background text-foreground border-border font-sans tracking-wide antialiased;
   }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #000000;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    @apply border-border scroll-smooth;
+  }
 }

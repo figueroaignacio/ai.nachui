@@ -117,23 +117,27 @@ export function ChatNewPage() {
             </div>
           </div>
         ) : (
-          <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-hidden px-6 py-6">
-            <div className="mb-4 flex-1 space-y-4 overflow-y-auto">
-              <MessageList
-                messages={messages}
-                streamingContent={streamingContent}
-                isStreaming={isStreaming}
-                onRegenerate={handleRegenerate}
-              />
-              {error && <p className="text-destructive text-xs">{error}</p>}
-              <div ref={messagesEndRef} />
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <div className="mx-auto w-full max-w-2xl px-6 py-6">
+                <MessageList
+                  messages={messages}
+                  streamingContent={streamingContent}
+                  isStreaming={isStreaming}
+                  onRegenerate={handleRegenerate}
+                />
+                {error && <p className="text-destructive text-xs">{error}</p>}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
-            <ChatInput
-              value={inputValue}
-              onChange={setInputValue}
-              onSubmit={handleSend}
-              disabled={isSubmitting || isStreaming}
-            />
+            <div className="mx-auto w-full max-w-2xl px-6 pb-6">
+              <ChatInput
+                value={inputValue}
+                onChange={setInputValue}
+                onSubmit={handleSend}
+                disabled={isSubmitting || isStreaming}
+              />
+            </div>
           </div>
         )}
 
