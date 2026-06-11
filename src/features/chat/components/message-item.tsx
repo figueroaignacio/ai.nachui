@@ -7,12 +7,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
-import { AiAvatar } from '@/shared/components/ai-avatar';
 import { MarkdownRenderer } from './markdown-renderer';
-
-// ---------------------------------------------------------------------------
-// 1. Message Item Component
-// ---------------------------------------------------------------------------
 
 interface MessageItemProps {
   role: 'user' | 'assistant';
@@ -47,7 +42,7 @@ export function MessageItem({
   if (role === 'user') {
     return (
       <div className="group/msg flex w-full justify-end py-2 select-text">
-        <div className="bg-secondary/70 border-border/40 text-foreground max-w-[80%] rounded-2xl border px-4 py-2.5 text-xs leading-relaxed shadow-sm md:text-sm">
+        <div className="bg-secondary/70 border-border/40 text-foreground max-w-[80%] rounded-xl rounded-br-sm border px-4 py-2.5 text-xs leading-relaxed shadow-sm md:text-sm">
           {content}
         </div>
       </div>
@@ -56,14 +51,8 @@ export function MessageItem({
 
   return (
     <div className="group/msg border-border/10 flex w-full gap-4 border-b py-6 select-text last:border-b-0">
-      {/* AI Assistant Avatar */}
-
-      <AiAvatar size="lg" />
-
-      {/* Content & Actions */}
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex items-center gap-2">
-          <span className="text-foreground/80 text-xs font-semibold">NachAI</span>
           {isStreaming && (
             <span className="bg-muted text-muted-foreground/60 animate-pulse rounded px-1.5 py-0.5 text-[9px] font-medium tracking-wide uppercase">
               Generating
@@ -71,7 +60,6 @@ export function MessageItem({
           )}
         </div>
 
-        {/* Text Container */}
         <div className="text-foreground/90 pr-4 leading-relaxed">
           <MarkdownRenderer content={content} />
           {isStreaming && (
@@ -79,7 +67,6 @@ export function MessageItem({
           )}
         </div>
 
-        {/* Action Buttons */}
         {!isStreaming && content && (
           <div className="mt-2.5 flex items-center gap-1 opacity-0 transition-opacity duration-200 group-hover/msg:opacity-100 focus-within:opacity-100">
             <button

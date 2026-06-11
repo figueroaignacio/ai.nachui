@@ -1,25 +1,17 @@
+import { useChat } from '@/features/chat/hooks/use-chat';
+import { AiAvatar } from '@/shared/components/ai-avatar';
+import { Sidebar } from '@/shared/components/ui/sidebar';
+import { Typography } from '@/shared/components/ui/typography';
+import { useSidebarStore } from '@/shared/store/sidebar-store';
 import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
-import { AiAvatar } from '@/shared/components/ai-avatar';
-import { SuggestionCard } from '@/shared/components/ui/navigation';
-import { Sidebar } from '@/shared/components/ui/sidebar';
-import { Skeleton } from '@/shared/components/ui/skeleton';
-import { Typography } from '@/shared/components/ui/typography';
-import { useSidebarStore } from '@/shared/store/sidebar-store';
-import { useChat } from '@/features/chat/hooks/use-chat';
 import { ChatInput } from './chat-input';
+import { ChatLoader } from './chat-loader';
 import { MessageList } from './message-list';
 
 const routeApi = getRouteApi('/chat/$id');
-
-const SUGGESTIONS = [
-  { title: 'Continue from where we left off' },
-  { title: 'Summarize this conversation' },
-  { title: 'Suggest next steps' },
-  { title: 'Explain your reasoning' },
-];
 
 export function ChatPage() {
   const { id } = routeApi.useParams();
@@ -103,80 +95,7 @@ export function ChatPage() {
         </header>
 
         {isLoading ? (
-          <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-hidden px-6 py-6">
-            <div className="mb-4 flex-1 space-y-6 overflow-y-auto">
-              <div className="flex flex-col gap-6">
-                {/* User message skeleton */}
-                <div className="flex w-full justify-end py-2">
-                  <Skeleton className="h-10 w-[40%] rounded-2xl" />
-                </div>
-                {/* Assistant message skeleton */}
-                <div className="border-border/10 flex w-full gap-4 border-b py-6 last:border-b-0">
-                  <Skeleton className="size-8 shrink-0 animate-pulse rounded-lg" />
-                  <div className="flex min-w-0 flex-1 flex-col gap-3">
-                    <Skeleton className="h-4 w-24 rounded" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[90%] rounded" />
-                      <Skeleton className="h-4 w-[85%] rounded" />
-                      <Skeleton className="h-4 w-[60%] rounded" />
-                    </div>
-                  </div>
-                </div>
-                {/* User message skeleton 2 */}
-                <div className="flex w-full justify-end py-2">
-                  <Skeleton className="h-10 w-[30%] rounded-2xl" />
-                </div>
-                {/* Assistant message skeleton 2 */}
-                <div className="border-border/10 flex w-full gap-4 border-b py-6 last:border-b-0">
-                  <Skeleton className="size-8 shrink-0 animate-pulse rounded-lg" />
-                  <div className="flex min-w-0 flex-1 flex-col gap-3">
-                    <Skeleton className="h-4 w-24 rounded" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-[95%] rounded" />
-                      <Skeleton className="h-4 w-[40%] rounded" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Input skeleton */}
-            <div className="border-border/50 bg-card/50 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5">
-              <Skeleton className="h-5 flex-1 rounded" />
-              <Skeleton className="size-6 rounded" />
-            </div>
-          </div>
-        ) : messages.length === 0 && !isStreaming && !isSubmitting ? (
-          <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
-            <div className="flex w-full max-w-xl flex-col items-center gap-6">
-              <div className="flex flex-col items-center gap-2 text-center">
-                <Typography
-                  variant="h3"
-                  align="center"
-                  className="text-foreground text-xl font-medium tracking-tight"
-                >
-                  Chat — {id.slice(0, 8)}…
-                </Typography>
-              </div>
-
-              <ChatInput
-                value={inputValue}
-                onChange={setInputValue}
-                onSubmit={handleSend}
-                disabled={isSubmitting || isStreaming}
-              />
-              {error && <p className="text-destructive text-xs">{error}</p>}
-
-              <div className="flex max-w-2xl flex-wrap justify-center gap-2">
-                {SUGGESTIONS.map((s) => (
-                  <SuggestionCard
-                    key={s.title}
-                    title={s.title}
-                    onClick={() => handleSend(s.title)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+          <ChatLoader />
         ) : (
           <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-hidden px-6 py-6">
             <div className="mb-4 flex-1 space-y-4 overflow-y-auto">
