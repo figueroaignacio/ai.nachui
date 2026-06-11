@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
-import { createChat, getMessages, sendMessage, type MessageRead } from '../api/chat-api';
+import { createChat, getMessages, sendMessage, type MessageRead } from '@/features/chat/api/chat-api';
 import { useStreamingMessage } from './use-streaming-message';
 
 interface UseChatOptions {

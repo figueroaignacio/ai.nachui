@@ -1,4 +1,4 @@
-import { fetchWithAuth } from '../../../shared/api/fetch-with-auth';
+import { fetchWithAuth } from '@/shared/api/fetch-with-auth';
 
 export interface ChatRead {
   id: string;

@@ -1,4 +1,4 @@
-import { getGitHubOAuthUrl } from '../../../shared/lib/oauth';
+import { getGitHubOAuthUrl } from '@/shared/lib/oauth';
 
 export function LoginPage() {
   return (

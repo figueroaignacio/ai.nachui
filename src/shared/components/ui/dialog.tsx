@@ -6,7 +6,7 @@ import { AnimatePresence, type HTMLMotionProps, motion } from 'motion/react';
 import * as React from 'react';
 import { cloneElement } from 'react';
 import { createPortal } from 'react-dom';
-import { cn } from '../../lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',

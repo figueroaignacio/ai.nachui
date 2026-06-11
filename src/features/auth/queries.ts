@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { fetchWithAuth } from '../../shared/api/fetch-with-auth';
+import { fetchWithAuth } from '@/shared/api/fetch-with-auth';
 import type { User } from './types';
 
 export const authQueryKeys = {

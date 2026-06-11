@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { create } from 'zustand';
-import { useAuthStore } from '../../auth/store/auth-store';
-import { listChats, type ChatRead } from '../api/chat-api';
+import { useAuthStore } from '@/features/auth/store/auth-store';
+import { listChats, type ChatRead } from '@/features/chat/api/chat-api';
 
 interface ChatListState {
   chats: ChatRead[];

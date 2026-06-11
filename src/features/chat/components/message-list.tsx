@@ -1,4 +1,4 @@
-import { type MessageRead } from '../api/chat-api';
+import { type MessageRead } from '@/features/chat/api/chat-api';
 import { MessageItem } from './message-item';
 
 interface MessageListProps {

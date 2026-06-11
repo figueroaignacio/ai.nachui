@@ -7,7 +7,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
-import { AiAvatar } from '../../../shared/components/ai-avatar';
+import { AiAvatar } from '@/shared/components/ai-avatar';
 import { MarkdownRenderer } from './markdown-renderer';
 
 // ---------------------------------------------------------------------------

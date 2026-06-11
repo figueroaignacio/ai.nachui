@@ -1,12 +1,12 @@
 import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Button } from '../../../shared/components/ui/button';
-import { Dialog } from '../../../shared/components/ui/dialog';
-import { SuggestionCard } from '../../../shared/components/ui/navigation';
-import { Sidebar } from '../../../shared/components/ui/sidebar';
-import { Typography } from '../../../shared/components/ui/typography';
-import { AiAvatar } from '../../../shared/components/ai-avatar';
-import { getGitHubOAuthUrl } from '../../../shared/lib/oauth';
+import { Button } from '@/shared/components/ui/button';
+import { Dialog } from '@/shared/components/ui/dialog';
+import { SuggestionCard } from '@/shared/components/ui/navigation';
+import { Sidebar } from '@/shared/components/ui/sidebar';
+import { Typography } from '@/shared/components/ui/typography';
+import { AiAvatar } from '@/shared/components/ai-avatar';
+import { getGitHubOAuthUrl } from '@/shared/lib/oauth';
 
 function GitHubIcon({ className }: { className?: string }) {
   return (

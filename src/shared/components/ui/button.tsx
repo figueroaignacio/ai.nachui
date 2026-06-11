@@ -5,7 +5,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { AnimatePresence, type HTMLMotionProps, motion, useReducedMotion } from 'motion/react';
 import React from 'react';
-import { cn } from '../../lib/cn';
+import { cn } from '@/shared/lib/cn';
 
 // --- CVA ---
 

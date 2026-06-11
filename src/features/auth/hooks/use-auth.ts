@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { meQueryOptions } from '../queries';
-import { useAuthStore } from '../store/auth-store';
+import { meQueryOptions } from '@/features/auth/queries';
+import { useAuthStore } from '@/features/auth/store/auth-store';
 
 export function useAuth() {
   const { token, user, status, setAuth, clearAuth } = useAuthStore();

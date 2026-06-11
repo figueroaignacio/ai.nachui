@@ -2,12 +2,12 @@ import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
-import { AiAvatar } from '../../../shared/components/ai-avatar';
-import { SuggestionCard } from '../../../shared/components/ui/navigation';
-import { Sidebar } from '../../../shared/components/ui/sidebar';
-import { Typography } from '../../../shared/components/ui/typography';
-import { useSidebarStore } from '../../../shared/store/sidebar-store';
-import { useChat } from '../hooks/use-chat';
+import { AiAvatar } from '@/shared/components/ai-avatar';
+import { SuggestionCard } from '@/shared/components/ui/navigation';
+import { Sidebar } from '@/shared/components/ui/sidebar';
+import { Typography } from '@/shared/components/ui/typography';
+import { useSidebarStore } from '@/shared/store/sidebar-store';
+import { useChat } from '@/features/chat/hooks/use-chat';
 import { ChatInput } from './chat-input';
 import { MessageList } from './message-list';
 

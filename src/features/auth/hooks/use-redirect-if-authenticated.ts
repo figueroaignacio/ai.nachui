@@ -1,4 +1,4 @@
-import { useAuthStore } from '../store/auth-store';
+import { useAuthStore } from '@/features/auth/store/auth-store';
 
 export function useRedirectIfAuthenticated() {
   const { status } = useAuthStore();

@@ -10,11 +10,11 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import * as React from 'react';
-import { useAuthStore } from '../../../features/auth/store/auth-store';
-import { useChatList } from '../../../features/chat/hooks/use-chat-list';
-import { SidebarItem } from '../../../shared/components/ui/navigation';
-import { useSidebarStore } from '../../../shared/store/sidebar-store';
-import { AiAvatar } from '../ai-avatar';
+import { useAuthStore } from '@/features/auth/store/auth-store';
+import { useChatList } from '@/features/chat/hooks/use-chat-list';
+import { SidebarItem } from '@/shared/components/ui/navigation';
+import { useSidebarStore } from '@/shared/store/sidebar-store';
+import { AiAvatar } from '@/shared/components/ai-avatar';
 import { Skeleton } from './skeleton';
 
 interface SidebarProps {

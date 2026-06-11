@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
-import { Skeleton } from '../../../shared/components/ui/skeleton';
-import { meQueryOptions } from '../queries';
-import { useAuthStore } from '../store/auth-store';
+import { Skeleton } from '@/shared/components/ui/skeleton';
+import { meQueryOptions } from '@/features/auth/queries';
+import { useAuthStore } from '@/features/auth/store/auth-store';
 
 const routeApi = getRouteApi('/auth/callback');
 
