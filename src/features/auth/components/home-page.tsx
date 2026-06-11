@@ -1,12 +1,12 @@
-import { SidebarRightIcon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
+import { AiAvatar } from '@/shared/components/ai-avatar';
 import { Button } from '@/shared/components/ui/button';
 import { Dialog } from '@/shared/components/ui/dialog';
 import { SuggestionCard } from '@/shared/components/ui/navigation';
 import { Sidebar } from '@/shared/components/ui/sidebar';
 import { Typography } from '@/shared/components/ui/typography';
-import { AiAvatar } from '@/shared/components/ai-avatar';
 import { getGitHubOAuthUrl } from '@/shared/lib/oauth';
+import { SidebarRightIcon } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
 
 function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -36,7 +36,7 @@ export function HomePage() {
             <Dialog.Trigger asChild>
               <button
                 type="button"
-                className="text-muted-foreground flex size-8 cursor-pointer items-center justify-center rounded-lg hover:bg-muted/50 transition-colors"
+                className="text-muted-foreground hover:bg-muted/50 flex size-8 cursor-pointer items-center justify-center rounded-lg transition-colors"
               >
                 <HugeiconsIcon icon={SidebarRightIcon} className="size-5" size={20} />
               </button>
@@ -51,13 +51,11 @@ export function HomePage() {
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
             <div className="flex w-full max-w-xl flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-3">
-                <div className="flex size-14 items-center justify-center rounded-2xl bg-muted border border-border/40 shadow-sm overflow-hidden p-1.5">
-                  <AiAvatar size="xl" />
-                </div>
+                <AiAvatar size="xl" />
                 <Typography
                   variant="h3"
                   align="center"
-                  className="text-foreground text-xl font-medium tracking-tight mt-2"
+                  className="text-foreground mt-2 text-xl font-medium tracking-tight"
                 >
                   What can I help with?
                 </Typography>
