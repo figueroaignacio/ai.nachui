@@ -5,6 +5,7 @@ import { Dialog } from '../../../shared/components/ui/dialog';
 import { SuggestionCard } from '../../../shared/components/ui/navigation';
 import { Sidebar } from '../../../shared/components/ui/sidebar';
 import { Typography } from '../../../shared/components/ui/typography';
+import { AiAvatar } from '../../../shared/components/ai-avatar';
 import { getGitHubOAuthUrl } from '../../../shared/lib/oauth';
 
 function GitHubIcon({ className }: { className?: string }) {
@@ -40,17 +41,23 @@ export function HomePage() {
                 <HugeiconsIcon icon={SidebarRightIcon} className="size-5" size={20} />
               </button>
             </Dialog.Trigger>
-            <span className="text-sm font-semibold">NachAI</span>
+            <div className="flex items-center gap-2">
+              <AiAvatar size="sm" />
+              <span className="text-sm font-semibold">NachAI</span>
+            </div>
             <div className="size-8" />
           </header>
 
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
             <div className="flex w-full max-w-xl flex-col items-center gap-6">
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex size-14 items-center justify-center rounded-2xl bg-muted border border-border/40 shadow-sm overflow-hidden p-1.5">
+                  <AiAvatar size="xl" />
+                </div>
                 <Typography
                   variant="h3"
                   align="center"
-                  className="text-foreground text-xl font-medium tracking-tight"
+                  className="text-foreground text-xl font-medium tracking-tight mt-2"
                 >
                   What can I help with?
                 </Typography>

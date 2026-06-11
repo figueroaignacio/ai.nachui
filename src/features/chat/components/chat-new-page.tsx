@@ -2,6 +2,7 @@ import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
+import { AiAvatar } from '../../../shared/components/ai-avatar';
 import { SuggestionCard } from '../../../shared/components/ui/navigation';
 import { Sidebar } from '../../../shared/components/ui/sidebar';
 import { Typography } from '../../../shared/components/ui/typography';
@@ -71,22 +72,26 @@ export function ChatNewPage() {
           <button
             type="button"
             onClick={toggleMobileSidebar}
-            className="text-muted-foreground flex size-8 cursor-pointer items-center justify-center rounded-lg hover:bg-muted/50 transition-colors"
+            className="text-muted-foreground hover:bg-muted/50 flex size-8 cursor-pointer items-center justify-center rounded-lg transition-colors"
           >
             <HugeiconsIcon icon={SidebarRightIcon} className="size-5" size={20} />
           </button>
-          <span className="text-sm font-semibold">NachAI</span>
+          <div className="flex items-center gap-2">
+            <AiAvatar size="sm" />
+            <span className="text-sm font-semibold">NachAI</span>
+          </div>
           <div className="size-8" />
         </header>
 
         {!hasContent ? (
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
             <div className="flex w-full max-w-xl flex-col items-center gap-6">
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-3">
+                <AiAvatar size="xl" />
                 <Typography
                   variant="h3"
                   align="center"
-                  className="text-foreground text-xl font-medium tracking-tight"
+                  className="text-foreground mt-2 text-xl font-medium tracking-tight"
                 >
                   What can I help with?
                 </Typography>
@@ -147,4 +152,3 @@ export function ChatNewPage() {
     </div>
   );
 }
-

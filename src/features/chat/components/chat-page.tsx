@@ -2,6 +2,7 @@ import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
+import { AiAvatar } from '../../../shared/components/ai-avatar';
 import { SuggestionCard } from '../../../shared/components/ui/navigation';
 import { Sidebar } from '../../../shared/components/ui/sidebar';
 import { Skeleton } from '../../../shared/components/ui/skeleton';
@@ -33,12 +34,13 @@ export function ChatPage() {
     refreshSidebarRef.current = refresh;
   }, []);
 
-  const { messages, streamingContent, isStreaming, isSubmitting, isLoading, error, submit } = useChat({
-    chatId: id,
-    onChatCreated: () => {
-      refreshSidebarRef.current?.();
-    },
-  });
+  const { messages, streamingContent, isStreaming, isSubmitting, isLoading, error, submit } =
+    useChat({
+      chatId: id,
+      onChatCreated: () => {
+        refreshSidebarRef.current?.();
+      },
+    });
 
   const submittedRef = React.useRef<string | null>(null);
 
@@ -89,11 +91,14 @@ export function ChatPage() {
           <button
             type="button"
             onClick={toggleMobileSidebar}
-            className="text-muted-foreground flex size-8 cursor-pointer items-center justify-center rounded-lg hover:bg-muted/50 transition-colors"
+            className="text-muted-foreground hover:bg-muted/50 flex size-8 cursor-pointer items-center justify-center rounded-lg transition-colors"
           >
             <HugeiconsIcon icon={SidebarRightIcon} className="size-5" size={20} />
           </button>
-          <span className="text-sm font-semibold">NachAI</span>
+          <div className="flex items-center gap-2">
+            <AiAvatar size="sm" />
+            <span className="text-sm font-semibold">NachAI</span>
+          </div>
           <div className="size-8" />
         </header>
 
@@ -106,8 +111,8 @@ export function ChatPage() {
                   <Skeleton className="h-10 w-[40%] rounded-2xl" />
                 </div>
                 {/* Assistant message skeleton */}
-                <div className="flex w-full gap-4 border-b border-border/10 py-6 last:border-b-0">
-                  <Skeleton className="size-8 shrink-0 rounded-lg animate-pulse" />
+                <div className="border-border/10 flex w-full gap-4 border-b py-6 last:border-b-0">
+                  <Skeleton className="size-8 shrink-0 animate-pulse rounded-lg" />
                   <div className="flex min-w-0 flex-1 flex-col gap-3">
                     <Skeleton className="h-4 w-24 rounded" />
                     <div className="space-y-2">
@@ -122,8 +127,8 @@ export function ChatPage() {
                   <Skeleton className="h-10 w-[30%] rounded-2xl" />
                 </div>
                 {/* Assistant message skeleton 2 */}
-                <div className="flex w-full gap-4 border-b border-border/10 py-6 last:border-b-0">
-                  <Skeleton className="size-8 shrink-0 rounded-lg animate-pulse" />
+                <div className="border-border/10 flex w-full gap-4 border-b py-6 last:border-b-0">
+                  <Skeleton className="size-8 shrink-0 animate-pulse rounded-lg" />
                   <div className="flex min-w-0 flex-1 flex-col gap-3">
                     <Skeleton className="h-4 w-24 rounded" />
                     <div className="space-y-2">
@@ -208,4 +213,3 @@ export function ChatPage() {
     </div>
   );
 }
-

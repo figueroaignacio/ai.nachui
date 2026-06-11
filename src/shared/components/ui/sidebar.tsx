@@ -1,4 +1,11 @@
-import { Book01Icon, Chat01Icon, Search01Icon, SettingsIcon, SidebarLeftIcon, SidebarRightIcon } from '@hugeicons/core-free-icons';
+import {
+  Book01Icon,
+  Chat01Icon,
+  Search01Icon,
+  SettingsIcon,
+  SidebarLeftIcon,
+  SidebarRightIcon,
+} from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
@@ -7,6 +14,7 @@ import { useAuthStore } from '../../../features/auth/store/auth-store';
 import { useChatList } from '../../../features/chat/hooks/use-chat-list';
 import { SidebarItem } from '../../../shared/components/ui/navigation';
 import { useSidebarStore } from '../../../shared/store/sidebar-store';
+import { AiAvatar } from '../ai-avatar';
 import { Skeleton } from './skeleton';
 
 interface SidebarProps {
@@ -15,7 +23,6 @@ interface SidebarProps {
   onDocsClick?: () => void;
   onSettingsClick?: () => void;
   onSearchClick?: () => void;
-  /** Attach a refresh callback so parents can trigger a sidebar reload. */
   onRefreshReady?: (refresh: () => void) => void;
 }
 
@@ -56,9 +63,9 @@ export function Sidebar({
           opacity: isOpen ? 1 : 0,
         }}
         transition={{ duration: 0.2, ease: 'easeInOut' }}
-        className="border-border bg-card hidden shrink-0 flex-col border-r md:flex overflow-hidden relative h-full"
+        className="border-border bg-card relative hidden h-full shrink-0 flex-col overflow-hidden border-r md:flex"
       >
-        <div className="w-64 h-full flex flex-col shrink-0">
+        <div className="flex h-full w-64 shrink-0 flex-col">
           <SidebarContent
             activeItem={activeItem}
             onNewChat={() => handleItemClick(onNewChat)}
@@ -83,7 +90,7 @@ export function Sidebar({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setMobileSidebarOpen(false)}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs md:hidden cursor-pointer"
+              className="fixed inset-0 z-50 cursor-pointer bg-black/60 backdrop-blur-xs md:hidden"
             />
 
             {/* Slide-in drawer body */}
@@ -92,7 +99,7 @@ export function Sidebar({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.25, ease: [0.32, 0.94, 0.6, 1] }}
-              className="border-border bg-card fixed bottom-0 left-0 top-0 z-50 flex w-72 max-w-[80vw] flex-col border-r h-full md:hidden shadow-xl"
+              className="border-border bg-card fixed top-0 bottom-0 left-0 z-50 flex h-full w-72 max-w-[80vw] flex-col border-r shadow-xl md:hidden"
             >
               <SidebarContent
                 activeItem={activeItem}
@@ -140,8 +147,8 @@ function SidebarContent({
   return (
     <div className="flex h-full w-full flex-col">
       <div className="border-border/60 flex h-14 items-center justify-between border-b px-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold tracking-tight">Nach AI</span>
+        <div className="flex items-center gap-2.5">
+          <AiAvatar size="sm" />
         </div>
         {showCollapseButton && (
           <button
@@ -203,7 +210,6 @@ function SidebarContent({
                     to="/chat/$id"
                     params={{ id: chat.id }}
                     search={{ message: undefined }}
-                    onClick={onCollapse}
                     className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-xs transition-colors ${
                       isActive
                         ? 'bg-muted text-foreground'
@@ -246,4 +252,3 @@ function SidebarContent({
     </div>
   );
 }
-

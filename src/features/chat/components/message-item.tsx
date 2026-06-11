@@ -1,5 +1,4 @@
 import {
-  AiBrain01Icon,
   CheckIcon,
   Copy01Icon,
   Refresh01Icon,
@@ -8,6 +7,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
+import { AiAvatar } from '../../../shared/components/ai-avatar';
 
 // ---------------------------------------------------------------------------
 // 1. Code Block Component
@@ -248,9 +248,8 @@ export function MessageItem({
   return (
     <div className="group/msg border-border/10 flex w-full gap-4 border-b py-6 select-text last:border-b-0">
       {/* AI Assistant Avatar */}
-      <div className="from-primary shadow-primary/10 flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr to-purple-600 text-white shadow-sm">
-        <HugeiconsIcon icon={AiBrain01Icon} className="size-4.5" size={18} />
-      </div>
+
+      <AiAvatar size="lg" />
 
       {/* Content & Actions */}
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
