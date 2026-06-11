@@ -1,149 +1,158 @@
 import * as React from 'react';
+import ReactMarkdown from 'react-markdown';
 import { CodeBlock } from './code-block';
+
+interface ToolCallBadgeProps {
+  name: string;
+  argsString: string;
+}
+
+export function ToolCallBadge({ name, argsString }: ToolCallBadgeProps) {
+  const [open, setOpen] = React.useState(false);
+  const parsedArgs = React.useMemo(() => {
+    try {
+      return JSON.parse(argsString);
+    } catch {
+      return argsString;
+    }
+  }, [argsString]);
+
+  return (
+    <div className="border-border/40 my-3 overflow-hidden rounded-xl border bg-zinc-900/40 shadow-xs backdrop-blur-xs transition-all duration-200">
+      <div className="flex items-center justify-between bg-zinc-900/30 px-4 py-2.5">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="bg-primary/60 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+            <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
+          </span>
+          <span className="text-foreground/80 font-mono text-xs font-semibold tracking-wide">
+            {name}
+          </span>
+          <span className="text-muted-foreground/60 bg-muted/50 border-border/30 rounded-full border px-2 py-0.5 text-[10px] font-medium">
+            tool call
+          </span>
+        </div>
+        <button
+          onClick={() => setOpen(!open)}
+          className="text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-[11px] font-medium transition-colors select-none"
+        >
+          <span className="font-mono">{open ? 'Hide details' : 'Show details'}</span>
+          <svg
+            className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+      {open && (
+        <div className="border-border/20 max-h-60 overflow-x-auto border-t bg-zinc-950/80 p-3 font-mono text-[11px] text-zinc-300">
+          <pre className="leading-relaxed">
+            {typeof parsedArgs === 'object' ? JSON.stringify(parsedArgs, null, 2) : parsedArgs}
+          </pre>
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface MarkdownRendererProps {
   content: string;
 }
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
-  // Parse inline styles: bold (**), italic (*), inline code (`)
-  const renderInlineText = (text: string): React.ReactNode[] => {
-    const tokens = text.split(/(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*)/g);
-    return tokens.map((token, i) => {
-      if (token.startsWith('`') && token.endsWith('`')) {
-        return (
-          <code
-            key={i}
-            className="bg-muted/80 border-border/40 rounded border px-1 py-0.5 font-mono text-[11px] font-medium break-all text-pink-600 dark:text-pink-400"
-          >
-            {token.slice(1, -1)}
-          </code>
-        );
-      }
-      if (token.startsWith('**') && token.endsWith('**')) {
-        return (
-          <strong key={i} className="text-foreground font-semibold">
-            {token.slice(2, -2)}
-          </strong>
-        );
-      }
-      if (token.startsWith('*') && token.endsWith('*')) {
-        return (
-          <em key={i} className="italic">
-            {token.slice(1, -1)}
-          </em>
-        );
-      }
-      return token;
-    });
-  };
+  return (
+    <ReactMarkdown
+      components={{
+        code(props) {
+          const { children, className, ...rest } = props;
+          const match = /language-(\w+)/.exec(className || '');
+          const isInline = !match;
 
-  // Split content by code blocks: ```lang\ncode\n```
-  const parts = content.split(/```/);
-  const elements: React.ReactNode[] = [];
+          if (isInline) {
+            return (
+              <code
+                className="bg-muted/80 border-border/40 rounded border px-1 py-0.5 font-mono text-[11px] font-medium break-all text-pink-600 dark:text-pink-400"
+                {...rest}
+              >
+                {children}
+              </code>
+            );
+          }
 
-  parts.forEach((part, index) => {
-    // Odd indexes are code blocks
-    if (index % 2 === 1) {
-      const match = part.match(/^([a-zA-Z0-9+#-]+)?\n([\s\S]*)$/);
-      const lang = match ? match[1] || 'code' : 'code';
-      const code = match ? match[2] : part;
-      elements.push(<CodeBlock key={`code-${index}`} language={lang} code={code} />);
-    } else {
-      // Even indexes are regular markdown text blocks
-      const lines = part.split('\n');
-      let currentList: { type: 'ul' | 'ol'; items: string[] } | null = null;
+          return <CodeBlock language={match[1]} code={String(children).replace(/\n$/, '')} />;
+        },
 
-      const flushList = (key: string | number) => {
-        if (!currentList) return;
-        const ListTag = currentList.type;
-        elements.push(
-          <ListTag
-            key={`list-${key}`}
-            className={
-              currentList.type === 'ul'
-                ? 'text-foreground/90 my-3 list-disc space-y-1 pl-5 text-xs md:text-sm'
-                : 'text-foreground/90 my-3 list-decimal space-y-1 pl-5 text-xs md:text-sm'
+        em(props) {
+          const { children } = props;
+          const text = React.Children.toArray(children).join('').trim();
+          if (text.startsWith('[Calling tool ') && text.endsWith('...]')) {
+            const toolMatch = text.match(/^\[Calling tool '([^']+)' with args (.*?)\.\.\.\]$/);
+            if (toolMatch) {
+              return <ToolCallBadge name={toolMatch[1]} argsString={toolMatch[2]} />;
             }
-          >
-            {currentList.items.map((item, idx) => (
-              <li key={idx} className="leading-relaxed">
-                {renderInlineText(item)}
-              </li>
-            ))}
-          </ListTag>,
-        );
-        currentList = null;
-      };
-
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-
-        if (line.startsWith('### ')) {
-          flushList(i);
-          elements.push(
-            <h3 key={i} className="text-foreground mt-4 mb-2 text-sm font-semibold first:mt-0">
-              {renderInlineText(line.slice(4))}
-            </h3>,
-          );
-        } else if (line.startsWith('## ')) {
-          flushList(i);
-          elements.push(
-            <h2 key={i} className="text-foreground mt-5 mb-2 text-base font-semibold first:mt-0">
-              {renderInlineText(line.slice(3))}
-            </h2>,
-          );
-        } else if (line.startsWith('# ')) {
-          flushList(i);
-          elements.push(
-            <h1 key={i} className="text-foreground mt-6 mb-3 text-lg font-bold first:mt-0">
-              {renderInlineText(line.slice(2))}
-            </h1>,
-          );
-        } else if (line.startsWith('- ') || line.startsWith('* ')) {
-          const content = line.slice(2);
-          if (currentList && currentList.type === 'ul') {
-            currentList.items.push(content);
-          } else {
-            flushList(i);
-            currentList = { type: 'ul', items: [content] };
           }
-        } else if (/^\d+\.\s/.test(line)) {
-          const match = line.match(/^(\d+)\.\s(.*)$/);
-          const content = match ? match[2] : line;
-          if (currentList && currentList.type === 'ol') {
-            currentList.items.push(content);
-          } else {
-            flushList(i);
-            currentList = { type: 'ol', items: [content] };
-          }
-        } else if (line.startsWith('> ')) {
-          flushList(i);
-          elements.push(
-            <blockquote
-              key={i}
-              className="border-l-primary/30 text-muted-foreground my-3 border-l-2 pl-4 italic"
-            >
-              {renderInlineText(line.slice(2))}
-            </blockquote>,
-          );
-        } else if (!line.trim()) {
-          flushList(i);
-        } else {
-          flushList(i);
-          elements.push(
-            <p
-              key={i}
-              className="text-foreground/90 my-2 text-xs leading-relaxed last:mb-0 md:text-sm"
-            >
-              {renderInlineText(line)}
-            </p>,
-          );
-        }
-      }
-      flushList(`final-${index}`);
-    }
-  });
+          return <em className="italic">{children}</em>;
+        },
 
-  return <div className="space-y-1.5">{elements}</div>;
+        p(props) {
+          return (
+            <p className="text-foreground/90 my-2 text-xs leading-relaxed last:mb-0 md:text-sm">
+              {props.children}
+            </p>
+          );
+        },
+        h1(props) {
+          return (
+            <h1 className="text-foreground mt-6 mb-3 text-lg font-bold first:mt-0">
+              {props.children}
+            </h1>
+          );
+        },
+        h2(props) {
+          return (
+            <h2 className="text-foreground mt-5 mb-2 text-base font-semibold first:mt-0">
+              {props.children}
+            </h2>
+          );
+        },
+        h3(props) {
+          return (
+            <h3 className="text-foreground mt-4 mb-2 text-sm font-semibold first:mt-0">
+              {props.children}
+            </h3>
+          );
+        },
+        ul(props) {
+          return (
+            <ul className="text-foreground/90 my-3 list-disc space-y-1 pl-5 text-xs md:text-sm">
+              {props.children}
+            </ul>
+          );
+        },
+        ol(props) {
+          return (
+            <ol className="text-foreground/90 my-3 list-decimal space-y-1 pl-5 text-xs md:text-sm">
+              {props.children}
+            </ol>
+          );
+        },
+        li(props) {
+          return <li className="leading-relaxed">{props.children}</li>;
+        },
+        blockquote(props) {
+          return (
+            <blockquote className="border-l-primary/30 text-muted-foreground my-3 border-l-2 pl-4 italic">
+              {props.children}
+            </blockquote>
+          );
+        },
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
 }
