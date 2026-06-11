@@ -4,8 +4,8 @@ import { AiAvatar } from '@/shared/components/ai-avatar';
 import { SidebarItem } from '@/shared/components/ui/navigation';
 import { useSidebarStore } from '@/shared/store/sidebar-store';
 import {
-  Book01Icon,
   Chat01Icon,
+  Chatting01Icon,
   Search01Icon,
   SettingsIcon,
   SidebarLeftIcon,
@@ -20,7 +20,7 @@ import { Skeleton } from './skeleton';
 interface SidebarProps {
   activeItem?: string;
   onNewChat?: () => void;
-  onDocsClick?: () => void;
+  onChatsClick?: () => void;
   onSettingsClick?: () => void;
   onSearchClick?: () => void;
   onRefreshReady?: (refresh: () => void) => void;
@@ -29,7 +29,7 @@ interface SidebarProps {
 export function Sidebar({
   activeItem = 'new-chat',
   onNewChat,
-  onDocsClick,
+  onChatsClick,
   onSettingsClick,
   onSearchClick,
   onRefreshReady,
@@ -67,7 +67,7 @@ export function Sidebar({
           <SidebarContent
             activeItem={activeItem}
             onNewChat={() => handleItemClick(onNewChat)}
-            onDocsClick={() => handleItemClick(onDocsClick)}
+            onChatsClick={() => handleItemClick(onChatsClick)}
             onSettingsClick={() => handleItemClick(onSettingsClick)}
             onSearchClick={onSearchClick}
             onRefreshReady={onRefreshReady}
@@ -99,7 +99,7 @@ export function Sidebar({
               <SidebarContent
                 activeItem={activeItem}
                 onNewChat={() => handleItemClick(onNewChat)}
-                onDocsClick={() => handleItemClick(onDocsClick)}
+                onChatsClick={() => handleItemClick(onChatsClick)}
                 onSettingsClick={() => handleItemClick(onSettingsClick)}
                 onSearchClick={onSearchClick}
                 onRefreshReady={onRefreshReady}
@@ -122,7 +122,7 @@ interface SidebarContentProps extends SidebarProps {
 function SidebarContent({
   activeItem,
   onNewChat,
-  onDocsClick,
+  onChatsClick,
   onSettingsClick,
   onSearchClick,
   onRefreshReady,
@@ -163,10 +163,10 @@ function SidebarContent({
             onClick={onNewChat}
           />
           <SidebarItem
-            icon={Book01Icon}
-            label="System Docs"
-            active={activeItem === 'docs'}
-            onClick={onDocsClick}
+            icon={Chatting01Icon}
+            label="Chats"
+            active={activeItem === 'chats'}
+            onClick={onChatsClick}
           />
         </div>
 

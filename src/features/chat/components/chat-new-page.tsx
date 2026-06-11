@@ -62,7 +62,7 @@ export function ChatNewPage() {
       <Sidebar
         activeItem="new-chat"
         onNewChat={() => navigate({ to: '/chat/new' })}
-        onDocsClick={() => navigate({ to: '/chat/new' })}
+        onChatsClick={() => navigate({ to: '/chat/new' })}
         onSettingsClick={() => navigate({ to: '/chat/new' })}
         onRefreshReady={handleRefreshReady}
       />
