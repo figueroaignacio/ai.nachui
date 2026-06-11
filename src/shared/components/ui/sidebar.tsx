@@ -1,3 +1,8 @@
+import { LogoutButton } from '@/features/auth/components/logout-button';
+import { useChatList } from '@/features/chat/hooks/use-chat-list';
+import { AiAvatar } from '@/shared/components/ai-avatar';
+import { SidebarItem } from '@/shared/components/ui/navigation';
+import { useSidebarStore } from '@/shared/store/sidebar-store';
 import {
   Book01Icon,
   Chat01Icon,
@@ -7,14 +12,9 @@ import {
   SidebarRightIcon,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import { Link, useRouterState } from '@tanstack/react-router';
 import { AnimatePresence, motion } from 'motion/react';
 import * as React from 'react';
-import { useAuthStore } from '@/features/auth/store/auth-store';
-import { useChatList } from '@/features/chat/hooks/use-chat-list';
-import { SidebarItem } from '@/shared/components/ui/navigation';
-import { useSidebarStore } from '@/shared/store/sidebar-store';
-import { AiAvatar } from '@/shared/components/ai-avatar';
 import { Skeleton } from './skeleton';
 
 interface SidebarProps {
@@ -43,7 +43,6 @@ export function Sidebar({
 
   return (
     <>
-      {/* Desktop Floating Open Button (visible only when desktop sidebar is closed) */}
       {!isOpen && (
         <button
           type="button"
@@ -55,7 +54,6 @@ export function Sidebar({
         </button>
       )}
 
-      {/* Desktop Sidebar Container (Animated Width) */}
       <motion.aside
         initial={false}
         animate={{
@@ -79,11 +77,9 @@ export function Sidebar({
         </div>
       </motion.aside>
 
-      {/* Mobile Sidebar Drawer */}
       <AnimatePresence>
         {isMobileOpen && (
           <>
-            {/* Backdrop overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -93,7 +89,6 @@ export function Sidebar({
               className="fixed inset-0 z-50 cursor-pointer bg-black/60 backdrop-blur-xs md:hidden"
             />
 
-            {/* Slide-in drawer body */}
             <motion.div
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -134,8 +129,6 @@ function SidebarContent({
   showCollapseButton,
   onCollapse,
 }: SidebarContentProps) {
-  const { clearAuth, status } = useAuthStore();
-  const navigate = useNavigate();
   const { chats, isLoading, refresh } = useChatList();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
@@ -177,7 +170,6 @@ function SidebarContent({
           />
         </div>
 
-        {/* Search */}
         <div className="px-1.5">
           <div
             onClick={onSearchClick}
@@ -235,19 +227,7 @@ function SidebarContent({
           active={activeItem === 'settings'}
           onClick={onSettingsClick}
         />
-        {status === 'authenticated' && (
-          <button
-            type="button"
-            onClick={() => {
-              clearAuth();
-              navigate({ to: '/' });
-              onCollapse?.();
-            }}
-            className="text-destructive hover:bg-destructive/10 w-full rounded-lg px-3 py-1.5 text-left text-xs transition-colors"
-          >
-            Log out
-          </button>
-        )}
+        <LogoutButton onCollapse={onCollapse} />
       </div>
     </div>
   );
