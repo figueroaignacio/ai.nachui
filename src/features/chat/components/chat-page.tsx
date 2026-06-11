@@ -4,10 +4,12 @@ import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 import { SuggestionCard } from '../../../shared/components/ui/navigation';
 import { Sidebar } from '../../../shared/components/ui/sidebar';
+import { Skeleton } from '../../../shared/components/ui/skeleton';
 import { Typography } from '../../../shared/components/ui/typography';
 import { useSidebarStore } from '../../../shared/store/sidebar-store';
 import { useChat } from '../hooks/use-chat';
-import { MessageItem } from './message-item';
+import { ChatInput } from './chat-input';
+import { MessageList } from './message-list';
 
 const routeApi = getRouteApi('/chat/$id');
 
@@ -31,7 +33,7 @@ export function ChatPage() {
     refreshSidebarRef.current = refresh;
   }, []);
 
-  const { messages, streamingContent, isStreaming, isSubmitting, error, submit } = useChat({
+  const { messages, streamingContent, isStreaming, isSubmitting, isLoading, error, submit } = useChat({
     chatId: id,
     onChatCreated: () => {
       refreshSidebarRef.current?.();
@@ -95,7 +97,50 @@ export function ChatPage() {
           <div className="size-8" />
         </header>
 
-        {messages.length === 0 && !isStreaming && !isSubmitting ? (
+        {isLoading ? (
+          <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-hidden px-6 py-6">
+            <div className="mb-4 flex-1 space-y-6 overflow-y-auto">
+              <div className="flex flex-col gap-6">
+                {/* User message skeleton */}
+                <div className="flex w-full justify-end py-2">
+                  <Skeleton className="h-10 w-[40%] rounded-2xl" />
+                </div>
+                {/* Assistant message skeleton */}
+                <div className="flex w-full gap-4 border-b border-border/10 py-6 last:border-b-0">
+                  <Skeleton className="size-8 shrink-0 rounded-lg animate-pulse" />
+                  <div className="flex min-w-0 flex-1 flex-col gap-3">
+                    <Skeleton className="h-4 w-24 rounded" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[90%] rounded" />
+                      <Skeleton className="h-4 w-[85%] rounded" />
+                      <Skeleton className="h-4 w-[60%] rounded" />
+                    </div>
+                  </div>
+                </div>
+                {/* User message skeleton 2 */}
+                <div className="flex w-full justify-end py-2">
+                  <Skeleton className="h-10 w-[30%] rounded-2xl" />
+                </div>
+                {/* Assistant message skeleton 2 */}
+                <div className="flex w-full gap-4 border-b border-border/10 py-6 last:border-b-0">
+                  <Skeleton className="size-8 shrink-0 rounded-lg animate-pulse" />
+                  <div className="flex min-w-0 flex-1 flex-col gap-3">
+                    <Skeleton className="h-4 w-24 rounded" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-[95%] rounded" />
+                      <Skeleton className="h-4 w-[40%] rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Input skeleton */}
+            <div className="border-border/50 bg-card/50 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5">
+              <Skeleton className="h-5 flex-1 rounded" />
+              <Skeleton className="size-6 rounded" />
+            </div>
+          </div>
+        ) : messages.length === 0 && !isStreaming && !isSubmitting ? (
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
             <div className="flex w-full max-w-xl flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-2 text-center">
@@ -164,73 +209,3 @@ export function ChatPage() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
-interface ChatInputProps {
-  value: string;
-  onChange: (v: string) => void;
-  onSubmit: (v: string) => void;
-  disabled?: boolean;
-}
-
-function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProps) {
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(value);
-      }}
-      className="group border-border/50 bg-card/50 text-muted-foreground hover:border-muted-foreground/20 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left transition-colors duration-150"
-    >
-      <input
-        type="text"
-        placeholder={disabled ? 'Thinking…' : 'Send a message...'}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="text-foreground placeholder:text-muted-foreground/60 flex-1 bg-transparent text-xs outline-none disabled:opacity-60"
-      />
-      <button
-        type="submit"
-        disabled={disabled || !value.trim()}
-        className="bg-muted hover:bg-primary hover:text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded transition-colors duration-150 disabled:opacity-40"
-      >
-        {disabled ? (
-          <span className="block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        ) : (
-          <span className="text-[10px]">↑</span>
-        )}
-      </button>
-    </form>
-  );
-}
-
-interface MessageListProps {
-  messages: Array<{ id: string; role: 'user' | 'assistant'; content: string }>;
-  streamingContent: string;
-  isStreaming: boolean;
-  onRegenerate?: () => void;
-}
-
-function MessageList({ messages, streamingContent, isStreaming, onRegenerate }: MessageListProps) {
-  return (
-    <div className="flex flex-col gap-2">
-      {messages.map((msg, idx) => {
-        const isLast = idx === messages.length - 1;
-        return (
-          <MessageItem
-            key={msg.id}
-            role={msg.role}
-            content={msg.content}
-            onRegenerate={isLast && msg.role === 'assistant' ? onRegenerate : undefined}
-          />
-        );
-      })}
-      {(isStreaming || streamingContent) && (
-        <MessageItem role="assistant" content={streamingContent} isStreaming={true} />
-      )}
-    </div>
-  );
-}

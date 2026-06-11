@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+import { Skeleton } from '../../../shared/components/ui/skeleton';
 import { meQueryOptions } from '../queries';
 import { useAuthStore } from '../store/auth-store';
 
@@ -56,12 +57,39 @@ export function AuthCallbackPage() {
   }, [accessToken, meQuery.data, meQuery.isError, setAuth, clearAuth, navigate]);
 
   if (meQuery.isPending && accessToken) {
-    return <div>Completing sign in…</div>;
+    return (
+      <div className="bg-background text-foreground flex h-screen w-screen flex-col items-center justify-center p-6">
+        <div className="w-full max-w-sm space-y-4">
+          <Skeleton className="h-8 w-3/4 mx-auto rounded-lg" />
+          <Skeleton className="h-4 w-5/6 mx-auto rounded-lg" />
+          <div className="space-y-2 pt-4">
+            <Skeleton className="h-10 w-full rounded-lg" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (meQuery.isError) {
-    return <div>Authentication failed. Redirecting…</div>;
+    return (
+      <div className="bg-background text-foreground flex h-screen w-screen flex-col items-center justify-center p-6">
+        <div className="w-full max-w-sm space-y-4 text-center">
+          <p className="text-sm text-destructive">Authentication failed. Redirecting…</p>
+        </div>
+      </div>
+    );
   }
 
-  return <div>Completing sign in…</div>;
+  return (
+    <div className="bg-background text-foreground flex h-screen w-screen flex-col items-center justify-center p-6">
+      <div className="w-full max-w-sm space-y-4">
+        <Skeleton className="h-8 w-3/4 mx-auto rounded-lg" />
+        <Skeleton className="h-4 w-5/6 mx-auto rounded-lg" />
+        <div className="space-y-2 pt-4">
+          <Skeleton className="h-10 w-full rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
 }
+

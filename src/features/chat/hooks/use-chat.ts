@@ -13,6 +13,7 @@ interface UseChatReturn {
   streamingContent: string;
   isStreaming: boolean;
   isSubmitting: boolean;
+  isLoading: boolean;
   error: string | null;
   submit: (content: string) => Promise<void>;
 }
@@ -21,6 +22,7 @@ export function useChat({ chatId, onChatCreated }: UseChatOptions = {}): UseChat
   const navigate = useNavigate();
   const [messages, setMessages] = React.useState<MessageRead[]>([]);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const {
     content: streamingContent,
@@ -38,15 +40,24 @@ export function useChat({ chatId, onChatCreated }: UseChatOptions = {}): UseChat
   }, []);
 
   React.useEffect(() => {
-    if (!chatId) return;
+    if (!chatId) {
+      setIsLoading(false);
+      setMessages([]);
+      return;
+    }
     let cancelled = false;
+    setIsLoading(true);
 
     getMessages(chatId)
       .then((msgs) => {
-        if (!cancelled) setMessages(msgs);
+        if (!cancelled) {
+          setMessages(msgs);
+          setIsLoading(false);
+        }
       })
       .catch((err) => {
         if (!cancelled) {
+          setIsLoading(false);
           const errMsg = err instanceof Error ? err.message : '';
           if (errMsg.includes('404')) {
             navigate({ to: '/chat/new' });
@@ -139,5 +150,5 @@ export function useChat({ chatId, onChatCreated }: UseChatOptions = {}): UseChat
     ],
   );
 
-  return { messages, streamingContent, isStreaming, isSubmitting, error, submit };
+  return { messages, streamingContent, isStreaming, isSubmitting, isLoading, error, submit };
 }

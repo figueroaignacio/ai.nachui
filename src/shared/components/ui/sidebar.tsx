@@ -7,6 +7,7 @@ import { useAuthStore } from '../../../features/auth/store/auth-store';
 import { useChatList } from '../../../features/chat/hooks/use-chat-list';
 import { SidebarItem } from '../../../shared/components/ui/navigation';
 import { useSidebarStore } from '../../../shared/store/sidebar-store';
+import { Skeleton } from './skeleton';
 
 interface SidebarProps {
   activeItem?: string;
@@ -186,7 +187,11 @@ function SidebarContent({
           </span>
           <div className="space-y-0.5">
             {isLoading && chats.length === 0 ? (
-              <p className="text-muted-foreground/50 px-3 py-2 text-xs">Loading...</p>
+              <div className="space-y-1.5 px-3 py-1">
+                <Skeleton className="h-6 w-[85%] rounded-lg" />
+                <Skeleton className="h-6 w-[70%] rounded-lg" />
+                <Skeleton className="h-6 w-[75%] rounded-lg" />
+              </div>
             ) : chats.length === 0 ? (
               <p className="text-muted-foreground/40 px-3 py-2 text-xs">No chats yet.</p>
             ) : (

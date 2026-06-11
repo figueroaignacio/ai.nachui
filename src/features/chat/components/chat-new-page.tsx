@@ -7,7 +7,8 @@ import { Sidebar } from '../../../shared/components/ui/sidebar';
 import { Typography } from '../../../shared/components/ui/typography';
 import { useSidebarStore } from '../../../shared/store/sidebar-store';
 import { useChat } from '../hooks/use-chat';
-import { MessageItem } from './message-item';
+import { ChatInput } from './chat-input';
+import { MessageList } from './message-list';
 
 const SUGGESTIONS = [
   { title: 'Analyze UI component' },
@@ -147,73 +148,3 @@ export function ChatNewPage() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-
-interface ChatInputProps {
-  value: string;
-  onChange: (v: string) => void;
-  onSubmit: (v: string) => void;
-  disabled?: boolean;
-}
-
-function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProps) {
-  return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit(value);
-      }}
-      className="group border-border/50 bg-card/50 text-muted-foreground hover:border-muted-foreground/20 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left transition-colors duration-150"
-    >
-      <input
-        type="text"
-        placeholder={disabled ? 'Thinking…' : 'Send a message...'}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className="text-foreground placeholder:text-muted-foreground/60 flex-1 bg-transparent text-xs outline-none disabled:opacity-60"
-      />
-      <button
-        type="submit"
-        disabled={disabled || !value.trim()}
-        className="bg-muted hover:bg-primary hover:text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded transition-colors duration-150 disabled:opacity-40"
-      >
-        {disabled ? (
-          <span className="block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        ) : (
-          <span className="text-[10px]">↑</span>
-        )}
-      </button>
-    </form>
-  );
-}
-
-interface MessageListProps {
-  messages: Array<{ id: string; role: 'user' | 'assistant'; content: string }>;
-  streamingContent: string;
-  isStreaming: boolean;
-  onRegenerate?: () => void;
-}
-
-function MessageList({ messages, streamingContent, isStreaming, onRegenerate }: MessageListProps) {
-  return (
-    <div className="flex flex-col gap-2">
-      {messages.map((msg, idx) => {
-        const isLast = idx === messages.length - 1;
-        return (
-          <MessageItem
-            key={msg.id}
-            role={msg.role}
-            content={msg.content}
-            onRegenerate={isLast && msg.role === 'assistant' ? onRegenerate : undefined}
-          />
-        );
-      })}
-      {(isStreaming || streamingContent) && (
-        <MessageItem role="assistant" content={streamingContent} isStreaming={true} />
-      )}
-    </div>
-  );
-}
