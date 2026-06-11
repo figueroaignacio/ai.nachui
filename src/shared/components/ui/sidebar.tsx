@@ -1,7 +1,9 @@
 import { Book01Icon, Chat01Icon, Search01Icon, SettingsIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
+import * as React from 'react';
 import { useAuthStore } from '../../../features/auth/store/auth-store';
+import { useChatList } from '../../../features/chat/hooks/use-chat-list';
 import { SidebarItem } from '../../../shared/components/ui/navigation';
 
 interface SidebarProps {
@@ -10,7 +12,8 @@ interface SidebarProps {
   onDocsClick?: () => void;
   onSettingsClick?: () => void;
   onSearchClick?: () => void;
-  onChatClick?: (chatName: string) => void;
+  /** Attach a refresh callback so parents can trigger a sidebar reload. */
+  onRefreshReady?: (refresh: () => void) => void;
 }
 
 export function Sidebar({
@@ -19,17 +22,18 @@ export function Sidebar({
   onDocsClick,
   onSettingsClick,
   onSearchClick,
-  onChatClick,
+  onRefreshReady,
 }: SidebarProps) {
   const { clearAuth, status } = useAuthStore();
   const navigate = useNavigate();
+  const { chats, isLoading, refresh } = useChatList();
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
 
-  const chatHistory = [
-    { id: '550e8400-e29b-41d4-a716-446655440000', title: 'Design landing page header' },
-    { id: '6ba7b810-9dad-11d1-80b4-00c04fd430c8', title: 'Fix React hydration mismatch' },
-    { id: 'f81d4fae-7dec-11d0-a765-00a0c91e6bf6', title: 'NachUI button variants outline' },
-    { id: '7e57d004-2b99-4e7a-8f99-aa4db83e1c6b', title: 'Auth store hook composition' },
-  ];
+  // Notify parent once when refresh function is ready (effect, not render body)
+  React.useEffect(() => {
+    onRefreshReady?.(refresh);
+  }, [onRefreshReady, refresh]);
 
   return (
     <aside className="border-border bg-card hidden w-64 shrink-0 flex-col border-r md:flex">
@@ -43,7 +47,7 @@ export function Sidebar({
           <SidebarItem
             icon={Chat01Icon}
             label="New Chat"
-            active={activeItem === 'new-chat'}
+            active={activeItem === 'new-chat' || currentPath === '/chat/new'}
             onClick={onNewChat}
           />
           <SidebarItem
@@ -54,7 +58,7 @@ export function Sidebar({
           />
         </div>
 
-        {/* Search Bar */}
+        {/* Search */}
         <div className="px-1.5">
           <div
             onClick={onSearchClick}
@@ -70,15 +74,33 @@ export function Sidebar({
             Recent Chats
           </span>
           <div className="space-y-0.5">
-            {chatHistory.map((chat) => (
-              <SidebarItem
-                key={chat.id}
-                icon={Chat01Icon}
-                label={chat.title}
-                active={activeItem === chat.id}
-                onClick={() => onChatClick?.(chat.id)}
-              />
-            ))}
+            {isLoading ? (
+              <p className="text-muted-foreground/50 px-3 py-2 text-xs">Loading...</p>
+            ) : chats.length === 0 ? (
+              <p className="text-muted-foreground/40 px-3 py-2 text-xs">No chats yet.</p>
+            ) : (
+              chats.map((chat) => {
+                const isActive = activeItem === chat.id || currentPath === `/chat/${chat.id}`;
+                return (
+                  <Link
+                    key={chat.id}
+                    to="/chat/$id"
+                    params={{ id: chat.id }}
+                    search={{ message: undefined }}
+                    className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-xs transition-colors ${
+                      isActive
+                        ? 'bg-muted text-foreground'
+                        : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                    }`}
+                  >
+                    <HugeiconsIcon icon={Chat01Icon} className="size-3.5 shrink-0" size={14} />
+                    <span className="truncate">
+                      {chat.title ?? new Date(chat.created_at).toLocaleDateString()}
+                    </span>
+                  </Link>
+                );
+              })
+            )}
           </div>
         </div>
       </nav>

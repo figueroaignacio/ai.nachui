@@ -23,10 +23,5 @@ export async function fetchWithAuth(path: string, options: FetchOptions = {}): P
     headers,
   });
 
-  if (response.status === 401) {
-    useAuthStore.getState().clearAuth();
-    window.location.href = '/';
-  }
-
   return response;
 }

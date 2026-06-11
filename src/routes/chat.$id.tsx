@@ -9,5 +9,8 @@ export const Route = createFileRoute('/chat/$id')({
       throw redirect({ to: '/' });
     }
   },
+  validateSearch: (search: Record<string, unknown>) => ({
+    message: typeof search.message === 'string' ? search.message : undefined,
+  }),
   component: ChatPage,
 });

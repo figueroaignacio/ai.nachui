@@ -5,76 +5,82 @@ import * as React from 'react';
 import { SuggestionCard } from '../../../shared/components/ui/navigation';
 import { Sidebar } from '../../../shared/components/ui/sidebar';
 import { Typography } from '../../../shared/components/ui/typography';
-import { useRequireAuth } from '../../auth/hooks/use-require-auth';
+import { useChat } from '../hooks/use-chat';
+import { MessageItem } from './message-item';
 
 const routeApi = getRouteApi('/chat/$id');
 
+const SUGGESTIONS = [
+  { title: 'Continue from where we left off' },
+  { title: 'Summarize this conversation' },
+  { title: 'Suggest next steps' },
+  { title: 'Explain your reasoning' },
+];
+
 export function ChatPage() {
   const { id } = routeApi.useParams();
-  const { user } = useRequireAuth();
   const navigate = useNavigate();
-  const [messages, setMessages] = React.useState<
-    Array<{ role: 'user' | 'assistant'; text: string }>
-  >([]);
+  const { message } = routeApi.useSearch();
   const [inputValue, setInputValue] = React.useState('');
+  const refreshSidebarRef = React.useRef<(() => void) | null>(null);
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
-  const suggestions = [
-    { title: 'Analyze UI component' },
-    { title: 'Refactor Tailwind styles' },
-    { title: 'Optimize state flow' },
-    { title: 'Explain system design' },
-  ];
+  const handleRefreshReady = React.useCallback((refresh: () => void) => {
+    refreshSidebarRef.current = refresh;
+  }, []);
+
+  const { messages, streamingContent, isStreaming, isSubmitting, error, submit } = useChat({
+    chatId: id,
+    onChatCreated: () => {
+      refreshSidebarRef.current?.();
+    },
+  });
+
+  const submittedRef = React.useRef<string | null>(null);
 
   React.useEffect(() => {
-    if (id && id !== 'new') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setMessages([
-        {
-          role: 'user',
-          text: `Loaded previous conversation thread for chat: ${id}`,
-        },
-        {
-          role: 'assistant',
-          text: 'How can I assist you with this thread today?',
-        },
-      ]);
-    } else {
-      setMessages([]);
+    if (message && submittedRef.current !== message) {
+      submittedRef.current = message;
+      // Clear the query param so refresh/back doesn't re-trigger it
+      navigate({
+        to: '/chat/$id',
+        params: { id },
+        search: { message: undefined },
+        replace: true,
+      });
+      void submit(message);
     }
-  }, [id]);
+  }, [message, id, navigate, submit]);
 
-  const handleSendMessage = (text: string) => {
+  React.useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, streamingContent]);
+
+  const handleSend = async (text: string) => {
     if (!text.trim()) return;
-    setMessages((prev) => [...prev, { role: 'user', text }]);
     setInputValue('');
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          text: `Response for thread ${id}: regarding "${text}".`,
-        },
-      ]);
-    }, 600);
+    await submit(text);
   };
+
+  const handleRegenerate = React.useCallback(() => {
+    const userMsgs = messages.filter((m) => m.role === 'user');
+    if (userMsgs.length > 0) {
+      const lastUserMsg = userMsgs[userMsgs.length - 1];
+      void submit(lastUserMsg.content);
+    }
+  }, [messages, submit]);
 
   return (
     <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden">
-      {/* Sidebar Component */}
       <Sidebar
         activeItem={id}
-        onNewChat={() => {
-          navigate({ to: '/chat/new' });
-        }}
+        onNewChat={() => navigate({ to: '/chat/new' })}
         onDocsClick={() => navigate({ to: '/chat/new' })}
         onSettingsClick={() => navigate({ to: '/chat/new' })}
-        onChatClick={(chatId) => {
-          navigate({ to: `/chat/${chatId}` });
-        }}
+        onRefreshReady={handleRefreshReady}
       />
 
-      {/* Main Content Area */}
-      <div className="relative flex flex-1 flex-col overflow-y-auto">
+      <div className="relative flex flex-1 flex-col overflow-hidden">
         <header className="border-border/60 flex h-14 items-center justify-between border-b px-4 md:hidden">
           <button
             type="button"
@@ -86,103 +92,56 @@ export function ChatPage() {
           <div className="size-8" />
         </header>
 
-        {messages.length === 0 ? (
+        {messages.length === 0 && !isStreaming && !isSubmitting ? (
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-12">
             <div className="flex w-full max-w-xl flex-col items-center gap-6">
               <div className="flex flex-col items-center gap-2 text-center">
-                {user && (
-                  <pre className="text-muted-foreground bg-muted/40 border-border/40 max-w-full overflow-x-auto rounded border p-2 font-mono text-[10px] select-all">
-                    {JSON.stringify(user, null, 2)}
-                  </pre>
-                )}
                 <Typography
                   variant="h3"
                   align="center"
                   className="text-foreground text-xl font-medium tracking-tight"
                 >
-                  Thread ID: {id}
+                  Chat — {id.slice(0, 8)}…
                 </Typography>
               </div>
 
-              {/* Chat Input form */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSendMessage(inputValue);
-                }}
-                className="group border-border/50 bg-card/50 text-muted-foreground hover:border-muted-foreground/20 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left transition-colors duration-150"
-              >
-                <input
-                  type="text"
-                  placeholder="Send a message..."
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className="text-foreground placeholder:text-muted-foreground/60 flex-1 bg-transparent text-xs outline-none"
-                />
-                <button
-                  type="submit"
-                  className="bg-muted hover:bg-primary hover:text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded transition-colors duration-150"
-                >
-                  <span className="text-[10px]">↑</span>
-                </button>
-              </form>
+              <ChatInput
+                value={inputValue}
+                onChange={setInputValue}
+                onSubmit={handleSend}
+                disabled={isSubmitting || isStreaming}
+              />
+              {error && <p className="text-destructive text-xs">{error}</p>}
 
-              {/* Suggestions Grid */}
               <div className="flex max-w-2xl flex-wrap justify-center gap-2">
-                {suggestions.map((s, idx) => (
+                {SUGGESTIONS.map((s) => (
                   <SuggestionCard
-                    key={idx}
+                    key={s.title}
                     title={s.title}
-                    onClick={() => handleSendMessage(s.title)}
+                    onClick={() => handleSend(s.title)}
                   />
                 ))}
               </div>
             </div>
           </div>
         ) : (
-          /* Conversation Flow style */
-          <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-between px-6 py-6">
-            <div className="mb-6 space-y-4 overflow-y-auto">
-              {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-lg border px-3 py-2 text-xs ${
-                      msg.role === 'user'
-                        ? 'bg-secondary text-secondary-foreground border-border/50'
-                        : 'bg-card text-foreground border-border/30'
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Input Form at bottom */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSendMessage(inputValue);
-              }}
-              className="group border-border/50 bg-card/50 text-muted-foreground hover:border-muted-foreground/20 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left transition-colors duration-150"
-            >
-              <input
-                type="text"
-                placeholder="Send a message..."
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                className="text-foreground placeholder:text-muted-foreground/60 flex-1 bg-transparent text-xs outline-none"
+          <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col overflow-hidden px-6 py-6">
+            <div className="mb-4 flex-1 space-y-4 overflow-y-auto">
+              <MessageList
+                messages={messages}
+                streamingContent={streamingContent}
+                isStreaming={isStreaming}
+                onRegenerate={handleRegenerate}
               />
-              <button
-                type="submit"
-                className="bg-muted hover:bg-primary hover:text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded transition-colors duration-150"
-              >
-                <span className="text-[10px]">↑</span>
-              </button>
-            </form>
+              {error && <p className="text-destructive text-xs">{error}</p>}
+              <div ref={messagesEndRef} />
+            </div>
+            <ChatInput
+              value={inputValue}
+              onChange={setInputValue}
+              onSubmit={handleSend}
+              disabled={isSubmitting || isStreaming}
+            />
           </div>
         )}
 
@@ -198,6 +157,77 @@ export function ChatPage() {
           </Typography>
         </footer>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+interface ChatInputProps {
+  value: string;
+  onChange: (v: string) => void;
+  onSubmit: (v: string) => void;
+  disabled?: boolean;
+}
+
+function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProps) {
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(value);
+      }}
+      className="group border-border/50 bg-card/50 text-muted-foreground hover:border-muted-foreground/20 flex w-full items-center gap-3 rounded-lg border px-4 py-2.5 text-left transition-colors duration-150"
+    >
+      <input
+        type="text"
+        placeholder={disabled ? 'Thinking…' : 'Send a message...'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="text-foreground placeholder:text-muted-foreground/60 flex-1 bg-transparent text-xs outline-none disabled:opacity-60"
+      />
+      <button
+        type="submit"
+        disabled={disabled || !value.trim()}
+        className="bg-muted hover:bg-primary hover:text-primary-foreground flex size-6 shrink-0 items-center justify-center rounded transition-colors duration-150 disabled:opacity-40"
+      >
+        {disabled ? (
+          <span className="block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        ) : (
+          <span className="text-[10px]">↑</span>
+        )}
+      </button>
+    </form>
+  );
+}
+
+interface MessageListProps {
+  messages: Array<{ id: string; role: 'user' | 'assistant'; content: string }>;
+  streamingContent: string;
+  isStreaming: boolean;
+  onRegenerate?: () => void;
+}
+
+function MessageList({ messages, streamingContent, isStreaming, onRegenerate }: MessageListProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {messages.map((msg, idx) => {
+        const isLast = idx === messages.length - 1;
+        return (
+          <MessageItem
+            key={msg.id}
+            role={msg.role}
+            content={msg.content}
+            onRegenerate={isLast && msg.role === 'assistant' ? onRegenerate : undefined}
+          />
+        );
+      })}
+      {(isStreaming || streamingContent) && (
+        <MessageItem role="assistant" content={streamingContent} isStreaming={true} />
+      )}
     </div>
   );
 }
