@@ -1,4 +1,4 @@
-import { Menu01Icon } from '@hugeicons/core-free-icons';
+import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Button } from '../../../shared/components/ui/button';
 import { Dialog } from '../../../shared/components/ui/dialog';
@@ -35,9 +35,9 @@ export function HomePage() {
             <Dialog.Trigger asChild>
               <button
                 type="button"
-                className="text-muted-foreground flex size-8 items-center justify-center"
+                className="text-muted-foreground flex size-8 cursor-pointer items-center justify-center rounded-lg hover:bg-muted/50 transition-colors"
               >
-                <HugeiconsIcon icon={Menu01Icon} className="size-5" size={20} />
+                <HugeiconsIcon icon={SidebarRightIcon} className="size-5" size={20} />
               </button>
             </Dialog.Trigger>
             <span className="text-sm font-semibold">NachAI</span>

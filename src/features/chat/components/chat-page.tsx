@@ -1,10 +1,11 @@
-import { Menu01Icon } from '@hugeicons/core-free-icons';
+import { SidebarRightIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import * as React from 'react';
 import { SuggestionCard } from '../../../shared/components/ui/navigation';
 import { Sidebar } from '../../../shared/components/ui/sidebar';
 import { Typography } from '../../../shared/components/ui/typography';
+import { useSidebarStore } from '../../../shared/store/sidebar-store';
 import { useChat } from '../hooks/use-chat';
 import { MessageItem } from './message-item';
 
@@ -24,6 +25,7 @@ export function ChatPage() {
   const [inputValue, setInputValue] = React.useState('');
   const refreshSidebarRef = React.useRef<(() => void) | null>(null);
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
+  const { toggleMobileSidebar } = useSidebarStore();
 
   const handleRefreshReady = React.useCallback((refresh: () => void) => {
     refreshSidebarRef.current = refresh;
@@ -84,9 +86,10 @@ export function ChatPage() {
         <header className="border-border/60 flex h-14 items-center justify-between border-b px-4 md:hidden">
           <button
             type="button"
-            className="text-muted-foreground flex size-8 items-center justify-center"
+            onClick={toggleMobileSidebar}
+            className="text-muted-foreground flex size-8 cursor-pointer items-center justify-center rounded-lg hover:bg-muted/50 transition-colors"
           >
-            <HugeiconsIcon icon={Menu01Icon} className="size-5" size={20} />
+            <HugeiconsIcon icon={SidebarRightIcon} className="size-5" size={20} />
           </button>
           <span className="text-sm font-semibold">NachAI</span>
           <div className="size-8" />
