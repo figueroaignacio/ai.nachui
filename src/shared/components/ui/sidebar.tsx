@@ -1,4 +1,4 @@
-import { LogoutButton } from '@/features/auth/components/logout-button';
+import { UserMenu } from '@/features/chat/components/user-menu';
 import { useChatList } from '@/features/chat/hooks/use-chat-list';
 import { AiAvatar } from '@/shared/components/ai-avatar';
 import { SidebarItem } from '@/shared/components/ui/navigation';
@@ -122,7 +122,6 @@ function SidebarContent({
   activeItem,
   onNewChat,
   onChatsClick,
-  onSettingsClick,
   onSearchClick,
   onRefreshReady,
   showCollapseButton,
@@ -220,7 +219,7 @@ function SidebarContent({
       </nav>
 
       <div className="border-border/60 border-t p-3">
-        <LogoutButton onCollapse={onCollapse} />
+        <UserMenu onCollapse={onCollapse} />
       </div>
     </div>
   );
