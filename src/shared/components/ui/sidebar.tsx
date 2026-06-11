@@ -185,7 +185,7 @@ function SidebarContent({
             Recent Chats
           </span>
           <div className="space-y-0.5">
-            {isLoading ? (
+            {isLoading && chats.length === 0 ? (
               <p className="text-muted-foreground/50 px-3 py-2 text-xs">Loading...</p>
             ) : chats.length === 0 ? (
               <p className="text-muted-foreground/40 px-3 py-2 text-xs">No chats yet.</p>
