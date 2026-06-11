@@ -7,7 +7,6 @@ import {
   Chat01Icon,
   Chatting01Icon,
   Search01Icon,
-  SettingsIcon,
   SidebarLeftIcon,
   SidebarRightIcon,
 } from '@hugeicons/core-free-icons';
@@ -57,13 +56,13 @@ export function Sidebar({
       <motion.aside
         initial={false}
         animate={{
-          width: isOpen ? 256 : 0,
+          width: isOpen ? 288 : 0,
           opacity: isOpen ? 1 : 0,
         }}
         transition={{ duration: 0.2, ease: 'easeInOut' }}
         className="border-border bg-card relative hidden h-full shrink-0 flex-col overflow-hidden border-r md:flex"
       >
-        <div className="flex h-full w-64 shrink-0 flex-col">
+        <div className="flex h-full w-72 shrink-0 flex-col">
           <SidebarContent
             activeItem={activeItem}
             onNewChat={() => handleItemClick(onNewChat)}
@@ -220,13 +219,7 @@ function SidebarContent({
         </div>
       </nav>
 
-      <div className="border-border/60 space-y-1 border-t p-3">
-        <SidebarItem
-          icon={SettingsIcon}
-          label="Settings"
-          active={activeItem === 'settings'}
-          onClick={onSettingsClick}
-        />
+      <div className="border-border/60 border-t p-3">
         <LogoutButton onCollapse={onCollapse} />
       </div>
     </div>
