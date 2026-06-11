@@ -18,11 +18,13 @@
     "@tanstack/react-query-devtools": "^5.101.0",
     "@tanstack/react-router": "^1.170.15",
     "@tanstack/router-plugin": "^1.168.18",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "clsx": "^2.1.1",
     "motion": "^12.40.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
     "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.14"
   },
