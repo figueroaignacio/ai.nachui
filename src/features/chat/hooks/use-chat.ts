@@ -1,6 +1,11 @@
+import {
+  createChat,
+  getMessages,
+  sendMessage,
+  type MessageRead,
+} from '@/features/chat/api/chat-api';
 import { useNavigate } from '@tanstack/react-router';
-import * as React from 'react';
-import { createChat, getMessages, sendMessage, type MessageRead } from '@/features/chat/api/chat-api';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStreamingMessage } from './use-streaming-message';
 
 interface UseChatOptions {
@@ -20,26 +25,31 @@ interface UseChatReturn {
 
 export function useChat({ chatId, onChatCreated }: UseChatOptions = {}): UseChatReturn {
   const navigate = useNavigate();
-  const [messages, setMessages] = React.useState<MessageRead[]>([]);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [messages, setMessages] = useState<MessageRead[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const {
     content: streamingContent,
     isStreaming,
+    error: streamingError,
     start: startStream,
     reset: resetStream,
   } = useStreamingMessage();
 
-  const isMountedRef = React.useRef(true);
-  React.useEffect(() => {
+  useEffect(() => {
+    if (streamingError) setError(streamingError);
+  }, [streamingError]);
+
+  const isMountedRef = useRef(true);
+  useEffect(() => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!chatId) {
       setIsLoading(false);
       setMessages([]);
@@ -70,7 +80,7 @@ export function useChat({ chatId, onChatCreated }: UseChatOptions = {}): UseChat
     };
   }, [chatId, navigate]);
 
-  const submit = React.useCallback(
+  const submit = useCallback(
     async (content: string) => {
       if (!content.trim() || isSubmitting || isStreaming) return;
 

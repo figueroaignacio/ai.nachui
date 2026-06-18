@@ -54,7 +54,15 @@ export function useStreamingMessage(): StreamingState & StreamingActions {
 
           const json = dataLine.slice('data:'.length).trim();
           try {
-            const parsed = JSON.parse(json) as { content: string; done: boolean };
+            const parsed = JSON.parse(json) as { content: string; done: boolean; error?: boolean };
+            if (parsed.error) {
+              setState((prev) => ({
+                ...prev,
+                isStreaming: false,
+                error: parsed.content || 'Something went wrong',
+              }));
+              return;
+            }
             if (parsed.content) {
               setState((prev) => ({
                 ...prev,
